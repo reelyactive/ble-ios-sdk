@@ -51,5 +51,7 @@
 	</array>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Please allow location updates</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Please allow location updates</string>
 </dict>
 </plist>

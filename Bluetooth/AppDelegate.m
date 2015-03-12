@@ -14,22 +14,13 @@
 
 @implementation AppDelegate
 
-- (void)notify:(NSString *)message
-{
-    UILocalNotification *local = [[UILocalNotification alloc] init];
-    
-    local.fireDate = [NSDate dateWithTimeIntervalSinceNow:2];
-    local.timeZone = [NSTimeZone defaultTimeZone];
-    
-    local.alertBody = message;
-    local.soundName = UILocalNotificationDefaultSoundName;
-    
-    [[UIApplication sharedApplication] scheduleLocalNotification:local];
-    
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound
+                                                                                         categories:nil];
+    
+    [application registerUserNotificationSettings:notificationSettings];
     
     return YES;
 }

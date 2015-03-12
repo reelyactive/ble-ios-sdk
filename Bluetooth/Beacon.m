@@ -12,8 +12,21 @@ static NSString *const kBeaconNameKey = @"name";
 static NSString *const kBeaconUUIDKey = @"uuid";
 static NSString *const kBeaconMajorValueKey = @"major";
 static NSString *const kBeaconMinorValueKey = @"minor";
+static NSString *const kiBeaconValueKey = @"iBeacon";
 
 @implementation Beacon
+
+- (instancetype)initWithName:(NSString *)name
+                        uuid:(NSUUID *)uuid
+{
+    self = [super init];
+    if (self)
+    {
+        _name = name;
+        _uuid = uuid;
+    }
+    return self;
+}
 
 - (instancetype)initWithName:(NSString *)name
                         uuid:(NSUUID *)uuid
@@ -27,6 +40,7 @@ static NSString *const kBeaconMinorValueKey = @"minor";
         _uuid = uuid;
         _majorValue = major;
         _minorValue = minor;
+        _iBeacon = YES;
     }
     return self;
 }
@@ -34,11 +48,9 @@ static NSString *const kBeaconMinorValueKey = @"minor";
 - (CLBeaconRegion *)beaconRegion
 {
     return [[CLBeaconRegion alloc] initWithProximityUUID:self.uuid
+                                                   major:self.majorValue
+                                                   minor:self.minorValue
                                               identifier:self.name];
-//    return [[CLBeaconRegion alloc] initWithProximityUUID:self.uuid
-//                                                   major:self.majorValue
-//                                                   minor:self.minorValue
-//                                              identifier:self.name];
 }
 
 - (BOOL)isEqual:(id)object
@@ -52,10 +64,11 @@ static NSString *const kBeaconMinorValueKey = @"minor";
 
 - (BOOL)isEqualToBeacon:(Beacon *)beacon
 {
-    return [self.name isEqualToString:beacon.name]
-    && [self.uuid isEqual:beacon.uuid]
-    && self.majorValue == beacon.majorValue
-    && self.minorValue == beacon.minorValue;
+    return [self.uuid isEqual:beacon.uuid]
+    && self.iBeacon == beacon.iBeacon
+    && (self.iBeacon == NO
+        || (self.majorValue == beacon.majorValue
+            && self.minorValue == beacon.minorValue));
 }
 
 #pragma mark - NSCoding
@@ -69,6 +82,7 @@ static NSString *const kBeaconMinorValueKey = @"minor";
         _uuid = [aDecoder decodeObjectForKey:kBeaconUUIDKey];
         _majorValue = [[aDecoder decodeObjectForKey:kBeaconMajorValueKey] unsignedIntegerValue];
         _minorValue = [[aDecoder decodeObjectForKey:kBeaconMinorValueKey] unsignedIntegerValue];
+        _iBeacon = [[aDecoder decodeObjectForKey:kiBeaconValueKey] boolValue];
     }
     return self;
 }
@@ -79,6 +93,19 @@ static NSString *const kBeaconMinorValueKey = @"minor";
     [aCoder encodeObject:self.uuid forKey:kBeaconUUIDKey];
     [aCoder encodeObject:[NSNumber numberWithUnsignedInteger:self.majorValue] forKey:kBeaconMajorValueKey];
     [aCoder encodeObject:[NSNumber numberWithUnsignedInteger:self.minorValue] forKey:kBeaconMinorValueKey];
+    [aCoder encodeObject:[NSNumber numberWithBool:self.iBeacon] forKey:kiBeaconValueKey];
+}
+
+@end
+
+@implementation CLBeacon (Beacon)
+
+- (Beacon *)beacon
+{
+    return [[Beacon alloc] initWithName:nil
+                                   uuid:self.proximityUUID
+                                  major:self.major.unsignedIntegerValue
+                                  minor:self.minor.unsignedIntegerValue];
 }
 
 @end
