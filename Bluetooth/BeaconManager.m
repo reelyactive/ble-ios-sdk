@@ -16,6 +16,14 @@
 
 #import <UIKit/UIKit.h>
 
+#define BLOG_DEBUG 0
+
+#if BLOG_DEBUG
+# define BLog(...) NSLog(__VA_ARGS__)
+#else
+# define BLog(...)
+#endif
+
 NSString *BeaconManagerBeaconsDetectedChangedNotification = @"BeaconManagerBeaconsDetectedChangedNotification";
 NSString *BeaconManagerStateChangedNotification = @"BeaconManagerStateChangedNotification";
 
@@ -106,14 +114,14 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 {
     if (self.locationManager == nil && self.centralManager == nil)
     {
-        NSLog(@"BeaconManagerStateOff");
+        BLog(@"BeaconManagerStateOff");
         self.state = BeaconManagerStateOff;
     }
     else if (self.centralManager
              && self.detectBeacons
              && self.centralManager.state != CBCentralManagerStatePoweredOn)
     {
-        NSLog(@"BeaconManagerStateNeedBluetooth");
+        BLog(@"BeaconManagerStateNeedBluetooth");
         self.state = BeaconManagerStateNeedBluetooth;
     }
     else if (self.locationManager
@@ -121,12 +129,12 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
              && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways
              && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse)
     {
-        NSLog(@"BeaconManagerStateNeedLocationServices");
+        BLog(@"BeaconManagerStateNeedLocationServices");
         self.state = BeaconManagerStateNeedLocationServices;
     }
     else
     {
-        NSLog(@"BeaconManagerStateOn");
+        BLog(@"BeaconManagerStateOn");
         self.state = BeaconManagerStateOn;
     }
 }
@@ -279,7 +287,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)appDidEnterBackgroundActive:(NSNotification *)notification
 {
-    NSLog(@"appDidEnterBackgroundActive");
+    BLog(@"appDidEnterBackgroundActive");
     if (self.detectInBackground == NO)
     {
         if (self.detectedBeacons)
@@ -296,7 +304,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)appWillEnterForegroundActive:(NSNotification *)notification
 {
-    NSLog(@"appWillEnterForegroundActive");
+    BLog(@"appWillEnterForegroundActive");
     if (self.detectInBackground == NO)
     {
         if (self.detectedBeacons)
@@ -327,8 +335,6 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         [self.locationManager requestWhenInUseAuthorization];
     }
     
-//    self.locationManager.pausesLocationUpdatesAutomatically = NO;
-
     if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]])
     {
         for (Beacon *beacon in self.beacons)
@@ -338,14 +344,12 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     }
     else
     {
-        NSLog(@"Can't monitor beacon regions");
+        BLog(@"Can't monitor beacon regions");
         
         [self updateState];
 
         return NO;
     }
-
-//    [self.locationManager startUpdatingLocation];
     
     [self updateState];
     
@@ -397,22 +401,22 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    NSLog(@"Did enter region: %@", region);
+    BLog(@"Did enter region: %@", region);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-    NSLog(@"Did exit region: %@", region);
+    BLog(@"Did exit region: %@", region);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
 {
-    NSLog(@"Did determine state : %lld for region : %@", (long long)state, region);
+    BLog(@"Did determine state : %lld for region : %@", (long long)state, region);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
-    NSLog(@"Did range beacons : %lld, %@", (long long)beacons.count, beacons);
+    BLog(@"Did range beacons : %lld, %@", (long long)beacons.count, beacons);
 
     for (CLBeacon *beacon in beacons)
     {
@@ -424,20 +428,20 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error
 {
-    NSLog(@"Failed monitoring region: %@", error);
+    BLog(@"Failed monitoring region: %@", error);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
-    NSLog(@"Location manager failed: %@", error);
+    BLog(@"Location manager failed: %@", error);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
-    NSLog(@"kCLAuthorizationStatusAuthorized : %lld", (long long)kCLAuthorizationStatusAuthorized);
-    NSLog(@"kCLAuthorizationStatusAuthorizedAlways : %lld", (long long)kCLAuthorizationStatusAuthorizedAlways);
-    NSLog(@"kCLAuthorizationStatusAuthorizedWhenInUse : %lld", (long long)kCLAuthorizationStatusAuthorizedWhenInUse);
-    NSLog(@"Authorization Statis did change : %lld", (long long)status);
+    BLog(@"kCLAuthorizationStatusAuthorized : %lld", (long long)kCLAuthorizationStatusAuthorized);
+    BLog(@"kCLAuthorizationStatusAuthorizedAlways : %lld", (long long)kCLAuthorizationStatusAuthorizedAlways);
+    BLog(@"kCLAuthorizationStatusAuthorizedWhenInUse : %lld", (long long)kCLAuthorizationStatusAuthorizedWhenInUse);
+    BLog(@"Authorization Statis did change : %lld", (long long)status);
 
     [self updateState];
 }
@@ -467,7 +471,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
-    NSLog(@"-- central state changed: %lld", (long long)self.centralManager.state);
+    BLog(@"-- central state changed: %lld", (long long)self.centralManager.state);
     if (central.state == CBCentralManagerStatePoweredOn) {
         [self refreshBeaconScanning];
     }
@@ -479,7 +483,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 {
     if (self.centralManager.state != CBCentralManagerStatePoweredOn)
     {
-        NSLog(@"Error Central Manager is not powered on : state %lld", (long long)self.centralManager.state);
+        BLog(@"Error Central Manager is not powered on : state %lld", (long long)self.centralManager.state);
         return;
     }
     
@@ -499,7 +503,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         {
             if (beacon.iBeacon == NO)
             {
-                NSLog(@"UUID : %@", beacon.uuid.UUIDString);
+                BLog(@"UUID : %@", beacon.uuid.UUIDString);
                 [identifiers addObject:[CBUUID UUIDWithNSUUID:beacon.uuid]];
             }
         }
@@ -528,7 +532,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         [self didDetectUUID:[[NSUUID alloc] initWithUUIDString:uuid.UUIDString]];
     }
     
-//    NSLog(@"Found Peripheral Name : %@ : %@ : %@", peripheral.name, peripheral.identifier.UUIDString, advertisementData);
+    BLog(@"Found Peripheral Name : %@ : %@ : %@", peripheral.name, peripheral.identifier.UUIDString, advertisementData);
 }
 
 #pragma mark - CBPeripheralManagerDelegate
@@ -547,7 +551,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
 {
-    NSLog(@"-- peripheral state changed: %lld", (long long)self.peripheralManager.state);
+    BLog(@"-- peripheral state changed: %lld", (long long)self.peripheralManager.state);
     if (peripheral.state == CBPeripheralManagerStatePoweredOn)
     {
         [self startAdvertising];
@@ -568,7 +572,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 {
     if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn)
     {
-        NSLog(@"Error Peripheral Manager is not powered on : state %lld", (long long)self.peripheralManager.state);
+        BLog(@"Error Peripheral Manager is not powered on : state %lld", (long long)self.peripheralManager.state);
         return;
     }
     
@@ -616,14 +620,14 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral
                                        error:(NSError *)error
 {
-    NSLog(@"Did start advertising : %@ error : %@", peripheral, error);
+    BLog(@"Did start advertising : %@ error : %@", peripheral, error);
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
             didAddService:(CBService *)service
                     error:(NSError *)error
 {
-    NSLog(@"Did add service : %@ ; Error : %@", service, error);
+    BLog(@"Did add service : %@ ; Error : %@", service, error);
 }
 
 #pragma mark - Debug
@@ -632,6 +636,16 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 {
     self.iBeacon = YES;
 
+    if (self.locationManager)
+    {
+        [self turnOffLocation];
+    }
+    
+    if (self.centralManager)
+    {
+        [self turnOffCentral];
+    }
+    
     if (self.peripheralManager == nil)
     {
         [self turnOnPeripheral];
@@ -644,6 +658,16 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)debugBeacon
 {
+    if (self.locationManager)
+    {
+        [self turnOffLocation];
+    }
+    
+    if (self.centralManager)
+    {
+        [self turnOffCentral];
+    }
+
     if (self.peripheralManager == nil)
     {
         [self turnOnPeripheral];
@@ -675,7 +699,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     
     if (dict == nil)
     {
-        NSLog(@"Adding new Dict : %@", self.mutableDetectedBeacons);
+        BLog(@"Adding new Dict : %@", self.mutableDetectedBeacons);
         
         dict = @{
                  kBeaconManagerDateKey: [NSDate date],
@@ -723,7 +747,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         {
             if (self.peripheralManager)
             {
-                NSLog(@"Turning Peripheral Off");
+                BLog(@"Turning Peripheral Off");
                 [self turnOffPeripheral];
             }
         }
@@ -731,7 +755,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         {
             if (self.peripheralManager == nil)
             {
-                NSLog(@"Turning Peripheral On");
+                BLog(@"Turning Peripheral On");
                 [self turnOnPeripheral];                
             }
         }
@@ -740,7 +764,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)refresh:(NSTimer *)timer
 {
-    NSLog(@"Refresh");
+    BLog(@"Refresh");
     
     NSUInteger removed = 0;
     
