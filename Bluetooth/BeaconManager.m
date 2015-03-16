@@ -14,6 +14,8 @@
 
 #import "Beacon.h"
 
+#import <UIKit/UIKit.h>
+
 NSString *BeaconManagerBeaconsDetectedChangedNotification = @"BeaconManagerBeaconsDetectedChangedNotification";
 NSString *BeaconManagerStateChangedNotification = @"BeaconManagerStateChangedNotification";
 
@@ -75,6 +77,8 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         [self loadBeacons];
         
         self.beaconExpiryAge = kBeaconExpiryAge;
+        
+        [self setAppNotfications:YES];
     }
     return self;
 }
@@ -83,6 +87,8 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 {
     [self.refreshTimer invalidate];
     self.refreshTimer = nil;
+    
+    [self setAppNotfications:NO];
 }
 
 - (void)setState:(BeaconManagerState)state
@@ -201,12 +207,26 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)addBeacon:(Beacon *)beacon
 {
-    [self startMonitoringBeacon:beacon];
-    [self refreshBeaconScanning];
+    BOOL isUnique = YES;
     
-    self.beacons = [self.beacons arrayByAddingObject:beacon];
-    
-    [self persistBeacons];
+    for (Beacon *aBeacon in self.beacons)
+    {
+        if ([aBeacon isEqualToBeacon:beacon])
+        {
+            isUnique = NO;
+            break;
+        }
+    }
+   
+    if (isUnique)
+    {
+        [self startMonitoringBeacon:beacon];
+        [self refreshBeaconScanning];
+        
+        self.beacons = [self.beacons arrayByAddingObject:beacon];
+        
+        [self persistBeacons];
+    }
 }
 
 - (void)removeBeacon:(Beacon *)beacon
@@ -229,6 +249,66 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     self.beacons = [self.beacons filteredArrayUsingPredicate:predicate];
     
     [self persistBeacons];
+}
+
+#pragma mark - App Notifications
+
+- (void)setAppNotfications:(BOOL)setNotifications
+{
+    if (setNotifications)
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appDidEnterBackgroundActive:)
+                                                     name:UIApplicationDidEnterBackgroundNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(appWillEnterForegroundActive:)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+    }
+    else
+    {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIApplicationDidEnterBackgroundNotification
+                                                      object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIApplicationWillEnterForegroundNotification
+                                                      object:nil];
+    }
+}
+
+- (void)appDidEnterBackgroundActive:(NSNotification *)notification
+{
+    NSLog(@"appDidEnterBackgroundActive");
+    if (self.detectInBackground == NO)
+    {
+        if (self.detectedBeacons)
+        {
+            [self turnOffCentral];
+        }
+        
+        if (self.detectIBeacons)
+        {
+            [self turnOffLocation];
+        }
+    }
+}
+
+- (void)appWillEnterForegroundActive:(NSNotification *)notification
+{
+    NSLog(@"appWillEnterForegroundActive");
+    if (self.detectInBackground == NO)
+    {
+        if (self.detectedBeacons)
+        {
+            [self turnOnCentral];
+        }
+        
+        if (self.detectIBeacons)
+        {
+            [self turnOnLocation];
+        }
+    }
 }
 
 #pragma mark - CLLocationManagerDelegate
@@ -291,22 +371,28 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)startMonitoringBeacon:(Beacon *)beacon
 {
-    CLBeaconRegion *beaconRegion = beacon.beaconRegion;
-    
-    beaconRegion.notifyOnEntry = YES;
-    beaconRegion.notifyEntryStateOnDisplay = YES;
-    beaconRegion.notifyOnExit = YES;
-    
-    [self.locationManager startMonitoringForRegion:beaconRegion];
-    [self.locationManager startRangingBeaconsInRegion:beaconRegion];
+    if (beacon.iBeacon)
+    {
+        CLBeaconRegion *beaconRegion = beacon.beaconRegion;
+        
+        beaconRegion.notifyOnEntry = YES;
+        beaconRegion.notifyEntryStateOnDisplay = YES;
+        beaconRegion.notifyOnExit = YES;
+        
+        [self.locationManager startMonitoringForRegion:beaconRegion];
+        [self.locationManager startRangingBeaconsInRegion:beaconRegion];
+    }
 }
 
 - (void)stopMonitoringBeacon:(Beacon *)beacon
 {
-    CLBeaconRegion *beaconRegion = beacon.beaconRegion;
-    
-    [self.locationManager stopMonitoringForRegion:beaconRegion];
-    [self.locationManager stopRangingBeaconsInRegion:beaconRegion];
+    if (beacon.iBeacon)
+    {
+        CLBeaconRegion *beaconRegion = beacon.beaconRegion;
+        
+        [self.locationManager stopMonitoringForRegion:beaconRegion];
+        [self.locationManager stopRangingBeaconsInRegion:beaconRegion];
+    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
@@ -373,7 +459,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 - (void)turnOffCentral
 {
     [self.centralManager stopScan];
-    
+
     self.centralManager = nil;
     
     [self updateState];
@@ -411,12 +497,22 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         
         for (Beacon *beacon in self.beacons)
         {
-            NSLog(@"UUID : %@", beacon.uuid.UUIDString);
-            [identifiers addObject:[CBUUID UUIDWithNSUUID:beacon.uuid]];
+            if (beacon.iBeacon == NO)
+            {
+                NSLog(@"UUID : %@", beacon.uuid.UUIDString);
+                [identifiers addObject:[CBUUID UUIDWithNSUUID:beacon.uuid]];
+            }
         }
         
-        [self.centralManager scanForPeripheralsWithServices:identifiers
-                                                    options:scanOptions];
+        if (identifiers.count > 0)
+        {
+            [self.centralManager scanForPeripheralsWithServices:identifiers
+                                                        options:scanOptions];
+        }
+        else
+        {
+            [self.centralManager stopScan];
+        }
     }
 }
 

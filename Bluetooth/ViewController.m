@@ -46,12 +46,19 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 
 - (IBAction)startCentralAction:(id)sender {
     
-    if ([BeaconManager sharedManager].beacons.count == 0)
+    if ([BeaconManager sharedManager].beacons.count != 2)
     {
-        Beacon *beacon = [[Beacon alloc] initWithName:@"Test Beacon"
-                                                 uuid:[[NSUUID alloc] initWithUUIDString:kServiceUUID]
-                                                major:0
-                                                minor:0];
+        // Create an iBeacon to detect
+        Beacon *iBeacon = [[Beacon alloc] initWithName:@"Test iBeacon"
+                                                  uuid:[[NSUUID alloc] initWithUUIDString:kServiceUUID]
+                                                 major:0
+                                                 minor:0];
+        
+        [[BeaconManager sharedManager] addBeacon:iBeacon];
+
+        // Create a Beacon to detect
+        Beacon *beacon = [[Beacon alloc] initWithName:@"Test Beacon" uuid:[[NSUUID alloc]
+                                                                           initWithUUIDString:kServiceUUID]];
         
         [[BeaconManager sharedManager] addBeacon:beacon];
     }
@@ -67,9 +74,9 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 
     [BeaconManager sharedManager].peripheralName = @"Test Beacon";
     [BeaconManager sharedManager].peripheralUUID = kServiceUUID;
-    [BeaconManager sharedManager].peripheralCaracteristicUUID = kServiceUUID;
+//    [BeaconManager sharedManager].peripheralCaracteristicUUID = kServiceUUID;
     
-    [[BeaconManager sharedManager] debugIBeacon];
+    [[BeaconManager sharedManager] debugBeacon];
 }
 
 - (void)setBeaconDetectedNotifications:(BOOL)setNotifications
