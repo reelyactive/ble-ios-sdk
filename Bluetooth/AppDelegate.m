@@ -3,7 +3,7 @@
 //  Bluetooth
 //
 //  Created by Callum Henshall on 02/03/15.
-//  Copyright (c) 2015 Sidereo. All rights reserved.
+//  Copyright (c) 2015 reelyActive. All rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -11,7 +11,6 @@
 #import "BeaconManager.h"
 #import "Beacon.h"
 
-//static NSString * const kServiceUUID = @"7265656C-7941-6374-6976-652055554944";
 static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 
 @interface AppDelegate ()
@@ -54,9 +53,7 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
     [BeaconManager sharedManager].peripheralName = @"Test Beacon";
     [BeaconManager sharedManager].peripheralUUID = kServiceUUID;
     [BeaconManager sharedManager].advertisePeripheralWhenBeaconDetected = YES;
-    
-//    [BeaconManager sharedManager].peripheralCaracteristicUUID = kServiceUUID;
-    
+        
     [[BeaconManager sharedManager] setBeaconDetection:YES iBeacons:YES inBackground:YES];
     
     return YES;
