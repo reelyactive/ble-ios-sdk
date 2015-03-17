@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import <CoreLocation/CoreLocation.h>
+@import CoreLocation;
 
 
 /**
@@ -17,7 +17,7 @@
 @interface Beacon : NSObject <NSCoding>
 
 /**
- *
+ * Represents whether this is an iBeacon or not.
  */
 @property (assign, nonatomic, readonly) BOOL iBeacon;
 
@@ -25,11 +25,11 @@
 @property (strong, nonatomic, readonly) NSUUID *uuid;
 
 /**
- *
+ * Only used if this is an iBeacon.
  */
 @property (assign, nonatomic, readonly) CLBeaconMajorValue majorValue;
 /**
- *
+ * Only used if this is an iBeacon.
  */
 @property (assign, nonatomic, readonly) CLBeaconMinorValue minorValue;
 
@@ -48,7 +48,7 @@
                        minor:(CLBeaconMinorValue)minor;
 
 /**
- *
+ * @return CLBeaconRegion For use with CoreLocation
  */
 - (CLBeaconRegion *)beaconRegion;
 

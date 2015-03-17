@@ -20,11 +20,11 @@ extern NSString *BeaconManagerBeaconsDetectedChangedNotification;
 extern NSString *BeaconManagerStateChangedNotification;
 
 /**
- *
+ * The key used to access the date in detectedBeacons.
  */
 extern NSString *kBeaconManagerDateKey;
 /**
- *
+ * The key used to access the Beacon object in detectedBeacons.
  */
 extern NSString *kBeaconManagerBeaconKey;
 
@@ -33,9 +33,21 @@ extern NSString *kBeaconManagerBeaconKey;
  */
 typedef NS_ENUM(NSInteger, BeaconManagerState)
 {
+    /**
+     * The Manager is Off.
+     */
     BeaconManagerStateOff,
+    /**
+     * The Manager needs bluetooth to be activated or for the user to authorise the application to use bluetooth.
+     */
     BeaconManagerStateNeedBluetooth,
+    /**
+     * The Manager needs location services to be activated or for the user to authorise the application to use location services.
+     */
     BeaconManagerStateNeedLocationServices,
+    /**
+     * The Manager is On, all is fine.
+     */
     BeaconManagerStateOn,
 };
 
@@ -73,16 +85,16 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
  */
 @property (assign, nonatomic) BOOL advertisePeripheralWhenBeaconDetected;
 /**
- *
+ * UUID for the advertised peripheral.
  */
 @property (strong, nonatomic) NSString *peripheralUUID;
 /**
- *
+ * Name for the advertised peripheral.
  */
 @property (strong, nonatomic) NSString *peripheralName;
 
 /**
- * Optional UUID for the advertised peripheral.
+ * Optional UUID for the Caracteristic of the advertised peripheral.
  */
 @property (strong, nonatomic) NSString *peripheralCaracteristicUUID;
 

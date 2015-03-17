@@ -8,9 +8,8 @@
 
 #import "BeaconManager.h"
 
-#import <CoreBluetooth/CoreBluetooth.h>
-
-#import <CoreLocation/CoreLocation.h>
+@import CoreBluetooth;
+@import CoreLocation;
 
 #import "Beacon.h"
 

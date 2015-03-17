@@ -14,9 +14,7 @@
 		F292E8691AA4BC8100201FA1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F292E8681AA4BC8100201FA1 /* Images.xcassets */; };
 		F292E86C1AA4BC8100201FA1 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F292E86A1AA4BC8100201FA1 /* LaunchScreen.xib */; };
 		F292E8781AA4BC8100201FA1 /* BluetoothTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F292E8771AA4BC8100201FA1 /* BluetoothTests.m */; };
-		F292E8821AA4BCE900201FA1 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F292E8811AA4BCE900201FA1 /* CoreBluetooth.framework */; };
 		F2E7AC721AA6020800C86B37 /* BeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E7AC711AA6020800C86B37 /* BeaconManager.m */; };
-		F2E7AC741AA6192C00C86B37 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E7AC731AA6192C00C86B37 /* CoreLocation.framework */; };
 		F2E7AC781AA6196500C86B37 /* Beacon.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E7AC771AA6196500C86B37 /* Beacon.m */; };
 /* End PBXBuildFile section */
 
@@ -57,8 +55,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F2E7AC741AA6192C00C86B37 /* CoreLocation.framework in Frameworks */,
-				F292E8821AA4BCE900201FA1 /* CoreBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
