@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 
   s.homepage     = "https://github.com/reelyactive/ble-ios-sdk"
   s.license      = "Apache License, Version 2.0"
-  s.authors       = { "CallumOz" => "c@sidereo.com" }
+  s.authors       = { "Callum Henshall" => "c@sidereo.com" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/reelyactive/ble-ios-sdk.git", :tag => s.version }
   s.source_files  = "Bluetooth/{Beacon,BeaconManager}.{h,m}"
