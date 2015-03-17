@@ -10,7 +10,6 @@
 
 @import CoreLocation;
 
-
 /**
  * Represents a Bluetooth Beacon or an iBeacon.
  */

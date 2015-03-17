@@ -6,21 +6,20 @@
 //  Copyright (c) 2015 reelyActive. All rights reserved.
 //
 
-#import "BeaconManager.h"
-
+@import UIKit; // Needed for the UIApplication Notifications
 @import CoreBluetooth;
 @import CoreLocation;
 
-#import "Beacon.h"
+#import "BeaconManager.h"
 
-#import <UIKit/UIKit.h>
+#import "Beacon.h"
 
 #define BLOG_DEBUG 0
 
 #if BLOG_DEBUG
-# define BLog(...) NSLog(__VA_ARGS__)
+#   define BLog(...) NSLog(__VA_ARGS__)
 #else
-# define BLog(...)
+#   define BLog(...)
 #endif
 
 NSString *BeaconManagerBeaconsDetectedChangedNotification = @"BeaconManagerBeaconsDetectedChangedNotification";
