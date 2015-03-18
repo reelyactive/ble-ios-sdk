@@ -14,8 +14,8 @@
 		F292E8691AA4BC8100201FA1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F292E8681AA4BC8100201FA1 /* Images.xcassets */; };
 		F292E86C1AA4BC8100201FA1 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F292E86A1AA4BC8100201FA1 /* LaunchScreen.xib */; };
 		F292E8781AA4BC8100201FA1 /* BluetoothTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F292E8771AA4BC8100201FA1 /* BluetoothTests.m */; };
-		F2E7AC721AA6020800C86B37 /* BeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E7AC711AA6020800C86B37 /* BeaconManager.m */; };
-		F2E7AC781AA6196500C86B37 /* Beacon.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E7AC771AA6196500C86B37 /* Beacon.m */; };
+		F2E7AC721AA6020800C86B37 /* RABeaconManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E7AC711AA6020800C86B37 /* RABeaconManager.m */; };
+		F2E7AC781AA6196500C86B37 /* RABeacon.m in Sources */ = {isa = PBXBuildFile; fileRef = F2E7AC771AA6196500C86B37 /* RABeacon.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,11 +43,11 @@
 		F292E8761AA4BC8100201FA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F292E8771AA4BC8100201FA1 /* BluetoothTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BluetoothTests.m; sourceTree = "<group>"; };
 		F292E8811AA4BCE900201FA1 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
-		F2E7AC701AA6020800C86B37 /* BeaconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconManager.h; sourceTree = "<group>"; };
-		F2E7AC711AA6020800C86B37 /* BeaconManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconManager.m; sourceTree = "<group>"; };
+		F2E7AC701AA6020800C86B37 /* RABeaconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RABeaconManager.h; sourceTree = "<group>"; };
+		F2E7AC711AA6020800C86B37 /* RABeaconManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RABeaconManager.m; sourceTree = "<group>"; };
 		F2E7AC731AA6192C00C86B37 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		F2E7AC761AA6196500C86B37 /* Beacon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Beacon.h; sourceTree = "<group>"; };
-		F2E7AC771AA6196500C86B37 /* Beacon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Beacon.m; sourceTree = "<group>"; };
+		F2E7AC761AA6196500C86B37 /* RABeacon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RABeacon.h; sourceTree = "<group>"; };
+		F2E7AC771AA6196500C86B37 /* RABeacon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RABeacon.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,10 +94,10 @@
 				F292E8601AA4BC8100201FA1 /* AppDelegate.m */,
 				F292E8621AA4BC8100201FA1 /* ViewController.h */,
 				F292E8631AA4BC8100201FA1 /* ViewController.m */,
-				F2E7AC701AA6020800C86B37 /* BeaconManager.h */,
-				F2E7AC711AA6020800C86B37 /* BeaconManager.m */,
-				F2E7AC761AA6196500C86B37 /* Beacon.h */,
-				F2E7AC771AA6196500C86B37 /* Beacon.m */,
+				F2E7AC701AA6020800C86B37 /* RABeaconManager.h */,
+				F2E7AC711AA6020800C86B37 /* RABeaconManager.m */,
+				F2E7AC761AA6196500C86B37 /* RABeacon.h */,
+				F2E7AC771AA6196500C86B37 /* RABeacon.m */,
 				F292E8651AA4BC8100201FA1 /* Main.storyboard */,
 				F292E8681AA4BC8100201FA1 /* Images.xcassets */,
 				F292E86A1AA4BC8100201FA1 /* LaunchScreen.xib */,
@@ -243,8 +243,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F292E8641AA4BC8100201FA1 /* ViewController.m in Sources */,
-				F2E7AC721AA6020800C86B37 /* BeaconManager.m in Sources */,
-				F2E7AC781AA6196500C86B37 /* Beacon.m in Sources */,
+				F2E7AC721AA6020800C86B37 /* RABeaconManager.m in Sources */,
+				F2E7AC781AA6196500C86B37 /* RABeacon.m in Sources */,
 				F292E8611AA4BC8100201FA1 /* AppDelegate.m in Sources */,
 				F292E85E1AA4BC8100201FA1 /* main.m in Sources */,
 			);

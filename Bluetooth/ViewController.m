@@ -8,8 +8,7 @@
 
 #import "ViewController.h"
 
-#import "BeaconManager.h"
-#import "Beacon.h"
+#import "RABeaconManager.h"
 
 @interface ViewController ()
 
@@ -39,7 +38,7 @@
 
 - (IBAction)startPeripheralAction:(id)sender {
     
-    [[BeaconManager sharedManager] debugBeacon];
+    [[RABeaconManager sharedManager] debugBeacon];
 }
 
 @end

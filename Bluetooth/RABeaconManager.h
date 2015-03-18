@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class Beacon;
+@class RABeacon;
 
 /**
  * Posted when a Beacon is detected or is no longer in range.
@@ -54,7 +54,7 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 /**
  * This Beacon Manager is used for monitoring and detecting Bluetoth beacons and iBeacons.
  */
-@interface BeaconManager : NSObject
+@interface RABeaconManager : NSObject
 
 /**
  * Access the shared instance for this manager.
@@ -70,13 +70,13 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 /**
  * Used to add a Beacon to the list of beacons to be detected.
  */
-- (void)addBeacon:(Beacon *)beacon;
+- (void)addBeacon:(RABeacon *)beacon;
 /**
  * Used to remove a Beacon from the list of Beacons.
  *
  * It doesn't need to be the exact same instance, since isEqualToBeacon: is used.
  */
-- (void)removeBeacon:(Beacon *)beacon;
+- (void)removeBeacon:(RABeacon *)beacon;
 
 /**
  * If YES and a gived Beacon is detected, then the manager will advertise with the given UUID and Name.

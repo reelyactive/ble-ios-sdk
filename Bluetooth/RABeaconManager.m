@@ -10,9 +10,9 @@
 @import CoreBluetooth;
 @import CoreLocation;
 
-#import "BeaconManager.h"
+#import "RABeaconManager.h"
 
-#import "Beacon.h"
+#import "RABeacon.h"
 
 #define BLOG_DEBUG 0
 
@@ -33,7 +33,7 @@ static NSString * const kStoredBeaconsKey = @"kStoredBeaconsKey";
 static NSTimeInterval const kRefreshTimeInterval = 2.f;
 static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
-@interface BeaconManager () <CBCentralManagerDelegate, CBPeripheralManagerDelegate, CLLocationManagerDelegate>
+@interface RABeaconManager () <CBCentralManagerDelegate, CBPeripheralManagerDelegate, CLLocationManagerDelegate>
 
 @property (strong, nonatomic) CBCentralManager *centralManager;
 @property (strong, nonatomic) CBPeripheralManager *peripheralManager;
@@ -59,7 +59,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 @end
 
-@implementation BeaconManager
+@implementation RABeaconManager
 
 + (instancetype)sharedManager
 {
@@ -192,7 +192,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     {
         for (NSData *beaconData in storedItems)
         {
-            Beacon *beacon = [NSKeyedUnarchiver unarchiveObjectWithData:beaconData];
+            RABeacon *beacon = [NSKeyedUnarchiver unarchiveObjectWithData:beaconData];
             [beacons addObject:beacon];
         }
     }
@@ -203,7 +203,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 {
     NSMutableArray *beaconDataArray = [[NSMutableArray alloc] init];
     
-    for (Beacon *beacon in self.beacons)
+    for (RABeacon *beacon in self.beacons)
     {
         NSData *beaconData = [NSKeyedArchiver archivedDataWithRootObject:beacon];
         [beaconDataArray addObject:beaconData];
@@ -211,11 +211,11 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     [[NSUserDefaults standardUserDefaults] setObject:beaconDataArray forKey:kStoredBeaconsKey];
 }
 
-- (void)addBeacon:(Beacon *)beacon
+- (void)addBeacon:(RABeacon *)beacon
 {
     BOOL isUnique = YES;
     
-    for (Beacon *aBeacon in self.beacons)
+    for (RABeacon *aBeacon in self.beacons)
     {
         if ([aBeacon isEqualToBeacon:beacon])
         {
@@ -235,12 +235,12 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     }
 }
 
-- (void)removeBeacon:(Beacon *)beacon
+- (void)removeBeacon:(RABeacon *)beacon
 {
     [self stopMonitoringBeacon:beacon];
     [self refreshBeaconScanning];
     
-    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(Beacon *evaluatedObject, NSDictionary *bindings)
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(RABeacon *evaluatedObject, NSDictionary *bindings)
                               {
                                   if ([evaluatedObject isEqualToBeacon:beacon])
                                   {
@@ -335,7 +335,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     
     if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]])
     {
-        for (Beacon *beacon in self.beacons)
+        for (RABeacon *beacon in self.beacons)
         {
             [self startMonitoringBeacon:beacon];
         }
@@ -358,7 +358,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 {
     if ([CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]])
     {
-        for (Beacon *beacon in self.beacons)
+        for (RABeacon *beacon in self.beacons)
         {
             [self stopMonitoringBeacon:beacon];
         }
@@ -371,7 +371,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     [self updateState];
 }
 
-- (void)startMonitoringBeacon:(Beacon *)beacon
+- (void)startMonitoringBeacon:(RABeacon *)beacon
 {
     if (beacon.iBeacon)
     {
@@ -386,7 +386,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     }
 }
 
-- (void)stopMonitoringBeacon:(Beacon *)beacon
+- (void)stopMonitoringBeacon:(RABeacon *)beacon
 {
     if (beacon.iBeacon)
     {
@@ -418,7 +418,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
     for (CLBeacon *beacon in beacons)
     {
-        Beacon *aBeacon = beacon.beacon;
+        RABeacon *aBeacon = beacon.beacon;
         
         [self didDetectBeacon:aBeacon];
     }
@@ -497,7 +497,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         
         NSMutableArray *identifiers = [[NSMutableArray alloc] init];
         
-        for (Beacon *beacon in self.beacons)
+        for (RABeacon *beacon in self.beacons)
         {
             if (beacon.iBeacon == NO)
             {
@@ -681,7 +681,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)didDetectUUID:(NSUUID *)uuid
 {
-    for (Beacon *beacon in self.beacons)
+    for (RABeacon *beacon in self.beacons)
     {
         if ([beacon.uuid isEqual:uuid])
         {
@@ -691,7 +691,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     }
 }
 
-- (void)didDetectBeacon:(Beacon *)beacon
+- (void)didDetectBeacon:(RABeacon *)beacon
 {
     NSDictionary *dict = [self dictForBeacon:beacon];
     
@@ -723,7 +723,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     }
 }
 
-- (NSDictionary *)dictForBeacon:(Beacon *)beacon
+- (NSDictionary *)dictForBeacon:(RABeacon *)beacon
 {
     for (NSDictionary *dict in self.detectedBeacons)
     {

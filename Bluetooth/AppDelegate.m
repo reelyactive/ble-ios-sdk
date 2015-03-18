@@ -8,8 +8,8 @@
 
 #import "AppDelegate.h"
 
-#import "BeaconManager.h"
-#import "Beacon.h"
+#import "RABeaconManager.h"
+#import "RABeacon.h"
 
 static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 
@@ -33,28 +33,28 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
     
     [self setBeaconDetectedNotifications:YES];
 
-    if ([BeaconManager sharedManager].beacons.count != 2)
+    if ([RABeaconManager sharedManager].beacons.count != 2)
     {
         // Create an iBeacon to detect
-        Beacon *iBeacon = [[Beacon alloc] initWithName:@"Test iBeacon"
+        RABeacon *iBeacon = [[RABeacon alloc] initWithName:@"Test iBeacon"
                                                   uuid:[[NSUUID alloc] initWithUUIDString:kServiceUUID]
                                                  major:0
                                                  minor:0];
         
-        [[BeaconManager sharedManager] addBeacon:iBeacon];
+        [[RABeaconManager sharedManager] addBeacon:iBeacon];
         
         // Create a Beacon to detect
-        Beacon *beacon = [[Beacon alloc] initWithName:@"Test Beacon" uuid:[[NSUUID alloc]
+        RABeacon *beacon = [[RABeacon alloc] initWithName:@"Test Beacon" uuid:[[NSUUID alloc]
                                                                            initWithUUIDString:kServiceUUID]];
         
-        [[BeaconManager sharedManager] addBeacon:beacon];
+        [[RABeaconManager sharedManager] addBeacon:beacon];
     }
     
-    [BeaconManager sharedManager].peripheralName = @"Test Beacon";
-    [BeaconManager sharedManager].peripheralUUID = kServiceUUID;
-    [BeaconManager sharedManager].advertisePeripheralWhenBeaconDetected = YES;
+    [RABeaconManager sharedManager].peripheralName = @"Test Beacon";
+    [RABeaconManager sharedManager].peripheralUUID = kServiceUUID;
+    [RABeaconManager sharedManager].advertisePeripheralWhenBeaconDetected = YES;
         
-    [[BeaconManager sharedManager] setBeaconDetection:YES iBeacons:YES inBackground:YES];
+    [[RABeaconManager sharedManager] setBeaconDetection:YES iBeacons:YES inBackground:YES];
     
     return YES;
 }
@@ -78,7 +78,7 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 
 - (void)beaconsDetectedUpdate:(NSNotification *)notification
 {
-    [self notify:[NSString stringWithFormat:@"Did detect %llu beacons", (unsigned long long)[BeaconManager sharedManager].detectedBeacons.count]];
+    [self notify:[NSString stringWithFormat:@"Did detect %llu beacons", (unsigned long long)[RABeaconManager sharedManager].detectedBeacons.count]];
 }
 
 - (void)notify:(NSString *)message

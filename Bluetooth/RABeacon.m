@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 reelyActive. All rights reserved.
 //
 
-#import "Beacon.h"
+#import "RABeacon.h"
 
 static NSString *const kBeaconNameKey = @"name";
 static NSString *const kBeaconUUIDKey = @"uuid";
@@ -14,7 +14,7 @@ static NSString *const kBeaconMajorValueKey = @"major";
 static NSString *const kBeaconMinorValueKey = @"minor";
 static NSString *const kiBeaconValueKey = @"iBeacon";
 
-@implementation Beacon
+@implementation RABeacon
 
 - (instancetype)initWithName:(NSString *)name
                         uuid:(NSUUID *)uuid
@@ -57,12 +57,12 @@ static NSString *const kiBeaconValueKey = @"iBeacon";
 {
     if ([object isKindOfClass:[self class]])
     {
-        return [self isEqualToBeacon:(Beacon *)object];
+        return [self isEqualToBeacon:(RABeacon *)object];
     }
     return NO;
 }
 
-- (BOOL)isEqualToBeacon:(Beacon *)beacon
+- (BOOL)isEqualToBeacon:(RABeacon *)beacon
 {
     return [self.uuid isEqual:beacon.uuid]
     && self.iBeacon == beacon.iBeacon
@@ -100,9 +100,9 @@ static NSString *const kiBeaconValueKey = @"iBeacon";
 
 @implementation CLBeacon (Beacon)
 
-- (Beacon *)beacon
+- (RABeacon *)beacon
 {
-    return [[Beacon alloc] initWithName:nil
+    return [[RABeacon alloc] initWithName:nil
                                    uuid:self.proximityUUID
                                   major:self.major.unsignedIntegerValue
                                   minor:self.minor.unsignedIntegerValue];

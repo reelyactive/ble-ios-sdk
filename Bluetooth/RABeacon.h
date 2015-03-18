@@ -13,7 +13,7 @@
 /**
  * Represents a Bluetooth Beacon or an iBeacon.
  */
-@interface Beacon : NSObject <NSCoding>
+@interface RABeacon : NSObject <NSCoding>
 
 /**
  * Represents whether this is an iBeacon or not.
@@ -57,7 +57,7 @@
  * Compares the received to a given object.
  * @return YES if all the properties of both objects are equal.
  */
-- (BOOL)isEqualToBeacon:(Beacon *)beacon;
+- (BOOL)isEqualToBeacon:(RABeacon *)beacon;
 
 @end
 
@@ -66,6 +66,6 @@
 /**
  * Returns a Beacon representing an iBeacon.
  */
-- (Beacon *)beacon;
+- (RABeacon *)beacon;
 
 @end
