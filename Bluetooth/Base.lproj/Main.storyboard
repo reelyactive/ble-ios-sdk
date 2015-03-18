@@ -26,22 +26,11 @@
                                     <action selector="startPeripheralAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1ft-yQ-lWb"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ha-WX-TTu">
-                                <rect key="frame" x="257" y="80" width="87" height="30"/>
-                                <state key="normal" title="Start Central">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="startCentralAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YYT-HI-6Vk"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="9ha-WX-TTu" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="60" id="0qp-v3-eXM"/>
                             <constraint firstItem="MXy-0o-Ygv" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="120" id="3qf-Gx-LwG"/>
                             <constraint firstAttribute="centerX" secondItem="MXy-0o-Ygv" secondAttribute="centerX" id="A2M-bs-bZQ"/>
-                            <constraint firstAttribute="centerX" secondItem="9ha-WX-TTu" secondAttribute="centerX" id="h3o-m1-f3l"/>
                         </constraints>
                     </view>
                 </viewController>

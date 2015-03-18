@@ -37,10 +37,6 @@
     [super viewWillDisappear:animated];
 }
 
-- (IBAction)startCentralAction:(id)sender {
-    
-}
-
 - (IBAction)startPeripheralAction:(id)sender {
     
     [[BeaconManager sharedManager] debugBeacon];
