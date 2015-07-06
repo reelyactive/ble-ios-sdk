@@ -8,49 +8,28 @@
 
 #import "RABeacon.h"
 
-static NSString *const kBeaconNameKey = @"name";
-static NSString *const kBeaconUUIDKey = @"uuid";
-static NSString *const kBeaconMajorValueKey = @"major";
-static NSString *const kBeaconMinorValueKey = @"minor";
-static NSString *const kiBeaconValueKey = @"iBeacon";
+#import "RABeaconService.h"
+
+@interface RABeacon ()
+
+@property (strong, nonatomic) NSString *name;
+@property (strong, nonatomic) NSUUID *serviceUUID;
+@property (strong, nonatomic) NSString *systemID;
+
+@end
 
 @implementation RABeacon
 
-- (instancetype)initWithName:(NSString *)name
-                        uuid:(NSUUID *)uuid
+- (instancetype)initWithBeaconService:(RABeaconService *)beaconService systemID:(NSString *)systemID
 {
     self = [super init];
     if (self)
     {
-        _name = name;
-        _uuid = uuid;
+        _name = beaconService.name;
+        _serviceUUID = beaconService.serviceUUID;
+        _systemID = systemID;
     }
     return self;
-}
-
-- (instancetype)initWithName:(NSString *)name
-                        uuid:(NSUUID *)uuid
-                       major:(CLBeaconMajorValue)major
-                       minor:(CLBeaconMinorValue)minor
-{
-    self = [super init];
-    if (self)
-    {
-        _name = name;
-        _uuid = uuid;
-        _majorValue = major;
-        _minorValue = minor;
-        _iBeacon = YES;
-    }
-    return self;
-}
-
-- (CLBeaconRegion *)beaconRegion
-{
-    return [[CLBeaconRegion alloc] initWithProximityUUID:self.uuid
-                                                   major:self.majorValue
-                                                   minor:self.minorValue
-                                              identifier:self.name];
 }
 
 - (BOOL)isEqual:(id)object
@@ -64,48 +43,8 @@ static NSString *const kiBeaconValueKey = @"iBeacon";
 
 - (BOOL)isEqualToBeacon:(RABeacon *)beacon
 {
-    return [self.uuid isEqual:beacon.uuid]
-    && self.iBeacon == beacon.iBeacon
-    && (self.iBeacon == NO
-        || (self.majorValue == beacon.majorValue
-            && self.minorValue == beacon.minorValue));
-}
-
-#pragma mark - NSCoding
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super init];
-    if (self)
-    {
-        _name = [aDecoder decodeObjectForKey:kBeaconNameKey];
-        _uuid = [aDecoder decodeObjectForKey:kBeaconUUIDKey];
-        _majorValue = [[aDecoder decodeObjectForKey:kBeaconMajorValueKey] unsignedIntegerValue];
-        _minorValue = [[aDecoder decodeObjectForKey:kBeaconMinorValueKey] unsignedIntegerValue];
-        _iBeacon = [[aDecoder decodeObjectForKey:kiBeaconValueKey] boolValue];
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-    [aCoder encodeObject:self.name forKey:kBeaconNameKey];
-    [aCoder encodeObject:self.uuid forKey:kBeaconUUIDKey];
-    [aCoder encodeObject:[NSNumber numberWithUnsignedInteger:self.majorValue] forKey:kBeaconMajorValueKey];
-    [aCoder encodeObject:[NSNumber numberWithUnsignedInteger:self.minorValue] forKey:kBeaconMinorValueKey];
-    [aCoder encodeObject:[NSNumber numberWithBool:self.iBeacon] forKey:kiBeaconValueKey];
-}
-
-@end
-
-@implementation CLBeacon (Beacon)
-
-- (RABeacon *)beacon
-{
-    return [[RABeacon alloc] initWithName:nil
-                                   uuid:self.proximityUUID
-                                  major:self.major.unsignedIntegerValue
-                                  minor:self.minor.unsignedIntegerValue];
+    return [self.serviceUUID isEqual:beacon.serviceUUID]
+    && [self.systemID isEqualToString:beacon.systemID];
 }
 
 @end

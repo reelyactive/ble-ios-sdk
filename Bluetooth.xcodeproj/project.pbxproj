@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F246C4041B46C47600341C90 /* RABeaconService.m in Sources */ = {isa = PBXBuildFile; fileRef = F246C4031B46C47600341C90 /* RABeaconService.m */; };
+		F246C4071B46C48700341C90 /* RAIBeacon.m in Sources */ = {isa = PBXBuildFile; fileRef = F246C4061B46C48700341C90 /* RAIBeacon.m */; };
+		F246C40A1B46C71200341C90 /* RAIBeaconService.m in Sources */ = {isa = PBXBuildFile; fileRef = F246C4091B46C71200341C90 /* RAIBeaconService.m */; };
 		F292E85E1AA4BC8100201FA1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F292E85D1AA4BC8100201FA1 /* main.m */; };
 		F292E8611AA4BC8100201FA1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F292E8601AA4BC8100201FA1 /* AppDelegate.m */; };
 		F292E8641AA4BC8100201FA1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F292E8631AA4BC8100201FA1 /* ViewController.m */; };
@@ -29,6 +32,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F246C4021B46C47600341C90 /* RABeaconService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RABeaconService.h; sourceTree = "<group>"; };
+		F246C4031B46C47600341C90 /* RABeaconService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RABeaconService.m; sourceTree = "<group>"; };
+		F246C4051B46C48700341C90 /* RAIBeacon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAIBeacon.h; sourceTree = "<group>"; };
+		F246C4061B46C48700341C90 /* RAIBeacon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAIBeacon.m; sourceTree = "<group>"; };
+		F246C4081B46C71200341C90 /* RAIBeaconService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAIBeaconService.h; sourceTree = "<group>"; };
+		F246C4091B46C71200341C90 /* RAIBeaconService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAIBeaconService.m; sourceTree = "<group>"; };
 		F292E8581AA4BC8100201FA1 /* Bluetooth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bluetooth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F292E85C1AA4BC8100201FA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F292E85D1AA4BC8100201FA1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -98,6 +107,12 @@
 				F2E7AC711AA6020800C86B37 /* RABeaconManager.m */,
 				F2E7AC761AA6196500C86B37 /* RABeacon.h */,
 				F2E7AC771AA6196500C86B37 /* RABeacon.m */,
+				F246C4051B46C48700341C90 /* RAIBeacon.h */,
+				F246C4061B46C48700341C90 /* RAIBeacon.m */,
+				F246C4021B46C47600341C90 /* RABeaconService.h */,
+				F246C4031B46C47600341C90 /* RABeaconService.m */,
+				F246C4081B46C71200341C90 /* RAIBeaconService.h */,
+				F246C4091B46C71200341C90 /* RAIBeaconService.m */,
 				F292E8651AA4BC8100201FA1 /* Main.storyboard */,
 				F292E8681AA4BC8100201FA1 /* Images.xcassets */,
 				F292E86A1AA4BC8100201FA1 /* LaunchScreen.xib */,
@@ -242,6 +257,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F246C4071B46C48700341C90 /* RAIBeacon.m in Sources */,
+				F246C4041B46C47600341C90 /* RABeaconService.m in Sources */,
+				F246C40A1B46C71200341C90 /* RAIBeaconService.m in Sources */,
 				F292E8641AA4BC8100201FA1 /* ViewController.m in Sources */,
 				F2E7AC721AA6020800C86B37 /* RABeaconManager.m in Sources */,
 				F2E7AC781AA6196500C86B37 /* RABeacon.m in Sources */,

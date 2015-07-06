@@ -8,12 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-@class RABeacon;
+@class RABeacon, RAIBeacon, RABeaconService, RAIBeaconService;
+
 
 /**
  * Posted when a Beacon is detected or is no longer in range.
  */
 extern NSString *BeaconManagerBeaconsDetectedChangedNotification;
+/**
+ * Posted when an iBeacon is detected or is no longer in range.
+ */
+extern NSString *BeaconManagerIBeaconsDetectedChangedNotification;
 /**
  * Posted when the manager of the Manager changes.
  */
@@ -68,26 +73,40 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 @property (assign, nonatomic) NSTimeInterval beaconExpiryAge;
 
 /**
- * Used to add a Beacon to the list of beacons to be detected.
+ * Used to add a Beacon to the list of Beacons to be detected.
  */
-- (void)addBeacon:(RABeacon *)beacon;
+- (void)addBeaconService:(RABeaconService *)beaconService;
+
+/**
+ * Used to add an iBeacon to the list of iBeacons to be detected.
+ */
+- (void)addIBeaconService:(RAIBeaconService *)iBeaconService;
+
 /**
  * Used to remove a Beacon from the list of Beacons.
  *
  * It doesn't need to be the exact same instance, since isEqualToBeacon: is used.
  */
-- (void)removeBeacon:(RABeacon *)beacon;
+- (void)removeBeaconService:(RABeaconService *)beaconService;
+
+/**
+ * Used to remove an iBeacon from the list of iBeacons.
+ *
+ * It doesn't need to be the exact same instance, since isEqualToBeacon: is used.
+ */
+- (void)removeIBeaconService:(RAIBeaconService *)iBeaconService;
+
 
 /**
  * If YES and a gived Beacon is detected, then the manager will advertise with the given UUID and Name.
  *
- * @warning If peripheralUUID and peripheralName aren't set an NSInternalInconsistencyException is raised.
+ * @warning If YES and peripheralServiceUUID and peripheralName aren't set an NSInternalInconsistencyException is raised.
  */
 @property (assign, nonatomic) BOOL advertisePeripheralWhenBeaconDetected;
 /**
  * UUID for the advertised peripheral.
  */
-@property (strong, nonatomic) NSString *peripheralUUID;
+@property (strong, nonatomic) NSString *peripheralServiceUUID;
 /**
  * Name for the advertised peripheral.
  */
@@ -112,9 +131,19 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 @property (assign, nonatomic, readonly) BeaconManagerState state;
 
 /**
- * An Array of Beacon objects to detect.
+ * An Array of Beacon Services objects to detect.
  */
-@property (strong, nonatomic, readonly) NSArray *beacons;
+@property (strong, nonatomic, readonly) NSArray *beaconServices;
+
+/**
+ * An Array of iBeacon Services objects to detect.
+ */
+@property (strong, nonatomic, readonly) NSArray *iBeaconServices;
+
+/**
+ * Removes all the beacon services to detect
+ */
+- (void)removeAllServices;
 
 /**
  * Each object is an NSDictionary with 2 keys.
@@ -124,13 +153,34 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 @property (strong, nonatomic, readonly) NSArray *detectedBeacons;
 
 /**
- * Used only for debug.
+ * Each object is an NSDictionary with 2 keys.
+ * kBeaconManagerDateKey: an NSDate which is the lastest date that the beacon was detected.
+ * kBeaconManagerBeaconKey: the Beacon object.
  */
-- (void)debugIBeacon;
+@property (strong, nonatomic, readonly) NSArray *detectedIBeacons;
+
+/**
+ * This block is called each time a beacon is detected to workout if the beacon should be added to the list of detectedBeacons.
+ * By default this is nil, so the beacons are not filtered and all detected beacons are reported.
+ * @return YES to add the Beacon to the list of detectedBeacons
+ */
+@property (copy, nonatomic) BOOL (^filterBeaconBlock)(RABeacon *beacon);
+
+/**
+ * This block is called each time an iBeacon is detected to workout if the beacon should be added to the list of detectedIBeacons.
+ * By default this is nil, so the beacons are not filtered and all detected beacons are reported.
+ * @return YES to add the iBeacon to the list of detectedBeacons
+ */
+@property (copy, nonatomic) BOOL (^filterIBeaconBlock)(RAIBeacon *iBeacon);
 
 /**
  * Used only for debug.
  */
-- (void)debugBeacon;
+- (void)startDebuggingIBeacon;
+
+/**
+ * Used only for debug.
+ */
+- (void)startDebuggingBeacon;
 
 @end

@@ -9,7 +9,8 @@
 #import "AppDelegate.h"
 
 #import "RABeaconManager.h"
-#import "RABeacon.h"
+#import "RABeaconService.h"
+#import "RAIBeaconService.h"
 
 static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 
@@ -33,27 +34,26 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
     
     [self setBeaconDetectedNotifications:YES];
 
-    if ([RABeaconManager sharedManager].beacons.count != 2)
+    if ([RABeaconManager sharedManager].beaconServices.count != 1
+        && [RABeaconManager sharedManager].iBeaconServices.count != 1)
     {
-        // Create an iBeacon to detect
-        RABeacon *iBeacon = [[RABeacon alloc] initWithName:@"Test iBeacon"
-                                                  uuid:[[NSUUID alloc] initWithUUIDString:kServiceUUID]
-                                                 major:0
-                                                 minor:0];
+        [[RABeaconManager sharedManager] removeAllServices];
         
-        [[RABeaconManager sharedManager] addBeacon:iBeacon];
+        RABeaconService *beaconService = [[RABeaconService alloc] initWithName:@"Test Beacon"
+                                                                          uuid:[[NSUUID alloc] initWithUUIDString:kServiceUUID]];
+        [[RABeaconManager sharedManager] addBeaconService:beaconService];
         
-        // Create a Beacon to detect
-        RABeacon *beacon = [[RABeacon alloc] initWithName:@"Test Beacon" uuid:[[NSUUID alloc]
-                                                                           initWithUUIDString:kServiceUUID]];
-        
-        [[RABeaconManager sharedManager] addBeacon:beacon];
+        RAIBeaconService *iBeaconService = [[RAIBeaconService alloc] initWithName:@"Test iBeacon"
+                                                                             UUID:[[NSUUID alloc] initWithUUIDString:kServiceUUID]
+                                                                            major:0
+                                                                            minor:0];
+        [[RABeaconManager sharedManager] addIBeaconService:iBeaconService];
     }
     
     [RABeaconManager sharedManager].peripheralName = @"Test Beacon";
-    [RABeaconManager sharedManager].peripheralUUID = kServiceUUID;
+    [RABeaconManager sharedManager].peripheralServiceUUID = kServiceUUID;
     [RABeaconManager sharedManager].advertisePeripheralWhenBeaconDetected = YES;
-        
+    
     [[RABeaconManager sharedManager] setBeaconDetection:YES iBeacons:YES inBackground:YES];
     
     return YES;

@@ -38,7 +38,7 @@
 
 - (IBAction)startPeripheralAction:(id)sender {
     
-    [[RABeaconManager sharedManager] debugBeacon];
+    [[RABeaconManager sharedManager] startDebuggingBeacon];
 }
 
 @end

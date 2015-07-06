@@ -8,48 +8,35 @@
 
 #import <Foundation/Foundation.h>
 
-@import CoreLocation;
+@class RABeaconService;
 
 /**
  * Represents a Bluetooth Beacon or an iBeacon.
  */
-@interface RABeacon : NSObject <NSCoding>
+@interface RABeacon : NSObject
 
 /**
- * Represents whether this is an iBeacon or not.
+ * The beacon's name.
  */
-@property (assign, nonatomic, readonly) BOOL iBeacon;
-
 @property (strong, nonatomic, readonly) NSString *name;
-@property (strong, nonatomic, readonly) NSUUID *uuid;
 
 /**
- * Only used if this is an iBeacon.
+ * The UUID for the service.
  */
-@property (assign, nonatomic, readonly) CLBeaconMajorValue majorValue;
-/**
- * Only used if this is an iBeacon.
- */
-@property (assign, nonatomic, readonly) CLBeaconMinorValue minorValue;
+@property (strong, nonatomic, readonly) NSUUID *serviceUUID;
 
 /**
- * Creates a normal Bluetooth Beacon.
+ * The system ID of the Beacon.
+ * Onyl used when detecting a beacon.
  */
-- (instancetype)initWithName:(NSString *)name
-                        uuid:(NSUUID *)uuid;
+@property (strong, nonatomic, readonly) NSString *systemID;
 
 /**
- * Creates an iBeacon.
+ *
  */
-- (instancetype)initWithName:(NSString *)name
-                        uuid:(NSUUID *)uuid
-                       major:(CLBeaconMajorValue)major
-                       minor:(CLBeaconMinorValue)minor;
+- (instancetype)initWithBeaconService:(RABeaconService *)beaconService
+                             systemID:(NSString *)systemID;
 
-/**
- * @return CLBeaconRegion For use with CoreLocation
- */
-- (CLBeaconRegion *)beaconRegion;
 
 - (BOOL)isEqual:(id)object;
 
@@ -58,14 +45,5 @@
  * @return YES if all the properties of both objects are equal.
  */
 - (BOOL)isEqualToBeacon:(RABeacon *)beacon;
-
-@end
-
-@interface CLBeacon (Beacon)
-
-/**
- * Returns a Beacon representing an iBeacon.
- */
-- (RABeacon *)beacon;
 
 @end
