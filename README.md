@@ -14,6 +14,12 @@ pod "BeaconManager"
 
 How to get started
 ------------------
+To import the Beacon manager code :
+```
+#import "RABeacons.h"
+```
+This imports all files needed in one go.
+
 The preferred location for setting up the BeaconManger is from your App Delegate's ```application:didFinishLaunchingWithOptions:```,  this allows you to update the BeaconManager settings each time your app is launched. 
 
 ``` Objective-C
@@ -35,7 +41,7 @@ minor:1];
 
 [[RABeaconManager sharedManager] setBeaconDetection:YES iBeacons:YES inBackground:YES];
 ```
-This code sets up the BeaconManager to scan for a Beacon and an iBeacon, both using the null UDID.
+This code sets up the BeaconManager to scan for a Beacon and an iBeacon. both using the null UDID.
 
 To be notified as soon as a Beacon or iBeacon is detected add the following code in the appropriate location :
 
@@ -89,4 +95,5 @@ keys where needed.
 Demo project
 -----------
 For information on how to use the library the [documentation](http://cocoadocs.org/docsets/BeaconManager) should be sufficient, but if not a Demo project is provided that allows you to detect Beacons and iBeacons.
+
 
