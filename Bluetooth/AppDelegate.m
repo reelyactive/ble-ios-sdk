@@ -8,12 +8,7 @@
 
 #import "AppDelegate.h"
 
-#import "RABeaconManager.h"
-#import "RABeaconService.h"
-#import "RAIBeaconService.h"
-
-#import "RABeacon.h"
-#import "RAIBeacon.h"
+#import "RABeacons.h"
 
 static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 

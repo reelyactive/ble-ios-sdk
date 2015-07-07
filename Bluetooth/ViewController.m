@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 
-#import "RABeaconManager.h"
+#import "RABeacons.h"
 
 @interface ViewController ()
 

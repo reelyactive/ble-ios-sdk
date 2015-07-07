@@ -32,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F21E6CC51B4C199200E5811F /* RABeacons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RABeacons.h; sourceTree = "<group>"; };
 		F246C4021B46C47600341C90 /* RABeaconService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RABeaconService.h; sourceTree = "<group>"; };
 		F246C4031B46C47600341C90 /* RABeaconService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RABeaconService.m; sourceTree = "<group>"; };
 		F246C4051B46C48700341C90 /* RAIBeacon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAIBeacon.h; sourceTree = "<group>"; };
@@ -103,16 +104,7 @@
 				F292E8601AA4BC8100201FA1 /* AppDelegate.m */,
 				F292E8621AA4BC8100201FA1 /* ViewController.h */,
 				F292E8631AA4BC8100201FA1 /* ViewController.m */,
-				F2E7AC701AA6020800C86B37 /* RABeaconManager.h */,
-				F2E7AC711AA6020800C86B37 /* RABeaconManager.m */,
-				F2E7AC761AA6196500C86B37 /* RABeacon.h */,
-				F2E7AC771AA6196500C86B37 /* RABeacon.m */,
-				F246C4051B46C48700341C90 /* RAIBeacon.h */,
-				F246C4061B46C48700341C90 /* RAIBeacon.m */,
-				F246C4021B46C47600341C90 /* RABeaconService.h */,
-				F246C4031B46C47600341C90 /* RABeaconService.m */,
-				F246C4081B46C71200341C90 /* RAIBeaconService.h */,
-				F246C4091B46C71200341C90 /* RAIBeaconService.m */,
+				F2F9E7B51B4C217400D72321 /* Beacons */,
 				F292E8651AA4BC8100201FA1 /* Main.storyboard */,
 				F292E8681AA4BC8100201FA1 /* Images.xcassets */,
 				F292E86A1AA4BC8100201FA1 /* LaunchScreen.xib */,
@@ -155,6 +147,24 @@
 			);
 			name = Framework;
 			path = BluetoothTests;
+			sourceTree = "<group>";
+		};
+		F2F9E7B51B4C217400D72321 /* Beacons */ = {
+			isa = PBXGroup;
+			children = (
+				F21E6CC51B4C199200E5811F /* RABeacons.h */,
+				F2E7AC701AA6020800C86B37 /* RABeaconManager.h */,
+				F2E7AC711AA6020800C86B37 /* RABeaconManager.m */,
+				F2E7AC761AA6196500C86B37 /* RABeacon.h */,
+				F2E7AC771AA6196500C86B37 /* RABeacon.m */,
+				F246C4051B46C48700341C90 /* RAIBeacon.h */,
+				F246C4061B46C48700341C90 /* RAIBeacon.m */,
+				F246C4021B46C47600341C90 /* RABeaconService.h */,
+				F246C4031B46C47600341C90 /* RABeaconService.m */,
+				F246C4081B46C71200341C90 /* RAIBeaconService.h */,
+				F246C4091B46C71200341C90 /* RAIBeaconService.m */,
+			);
+			name = Beacons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
