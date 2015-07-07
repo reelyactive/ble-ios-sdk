@@ -35,7 +35,7 @@ minor:1];
 
 [[RABeaconManager sharedManager] setBeaconDetection:YES iBeacons:YES inBackground:YES];
 ```
-This code sets up the BeaconManager to scan for a Beacon and an iBeacon. both using the null UDID.
+This code sets up the BeaconManager to scan for a Beacon and an iBeacon, both using the null UDID.
 
 To be notified as soon as a Beacon or iBeacon is detected add the following code in the appropriate location :
 
