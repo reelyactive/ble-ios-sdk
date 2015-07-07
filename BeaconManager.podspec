@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.authors       = { "Callum Henshall" => "c@sidereo.com" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/reelyactive/ble-ios-sdk.git", :tag => s.version }
-  s.source_files  = "Bluetooth/RA{BeaconManager,Beacon,IBeacon,BeaconService,IBeaconService}.{h,m}"
+  s.source_files  = "Bluetooth/RA*.{h,m}"
   s.frameworks = "CoreBluetooth", "CoreLocation", "UIKit"
   s.requires_arc = true
 end
