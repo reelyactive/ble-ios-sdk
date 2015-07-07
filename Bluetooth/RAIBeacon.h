@@ -39,7 +39,7 @@
 @property (strong, nonatomic, readonly) CLBeacon *clBeacon;
 
 /**
- *
+ * Creates an iBeacon based on the gived iBeacon Service
  */
 - (instancetype)initWithBeacon:(RAIBeaconService *)iBeaconService
                       CLBeacon:(CLBeacon *)clBeacon;

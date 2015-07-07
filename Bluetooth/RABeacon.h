@@ -11,7 +11,7 @@
 @class RABeaconService;
 
 /**
- * Represents a Bluetooth Beacon or an iBeacon.
+ * Represents a Bluetooth Beacon.
  */
 @interface RABeacon : NSObject
 
@@ -27,12 +27,11 @@
 
 /**
  * The system ID of the Beacon.
- * Onyl used when detecting a beacon.
  */
 @property (strong, nonatomic, readonly) NSString *systemID;
 
 /**
- *
+ * Creates a Beacon based on the gived Beacon Service.
  */
 - (instancetype)initWithBeaconService:(RABeaconService *)beaconService
                              systemID:(NSString *)systemID;
