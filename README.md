@@ -22,26 +22,19 @@ This imports all files needed in one go.
 
 The preferred location for setting up the BeaconManger is from your App Delegate's ```application:didFinishLaunchingWithOptions:```,  this allows you to update the BeaconManager settings each time your app is launched. 
 
+This code sets up the BeaconManager to scan for a Beacon using a given UDID.
 ``` Objective-C
-if ([RABeaconManager sharedManager].beaconServices.count != 1
-&& [RABeaconManager sharedManager].iBeaconServices.count != 1)
+if ([RABeaconManager sharedManager].beaconServices.count != 1)
 {
 [[RABeaconManager sharedManager] removeAllServices];
 
 RABeaconService *beaconService = [[RABeaconService alloc] initWithName:@"Test Beacon"
-uuid:[[NSUUID alloc] initWithUUIDString:@"00000000-0000-0000-0000-000000000000"]];
+uuid:[[NSUUID alloc] initWithUUIDString:@"7265656C-7941-6374-6976-652055554944"]];
 [[RABeaconManager sharedManager] addBeaconService:beaconService];
-
-RAIBeaconService *iBeaconService = [[RAIBeaconService alloc] initWithName:@"Test iBeacon"
-UUID:[[NSUUID alloc] initWithUUIDString:@"00000000-0000-0000-0000-000000000000"]
-major:1
-minor:1];
-[[RABeaconManager sharedManager] addIBeaconService:iBeaconService];
 }
 
-[[RABeaconManager sharedManager] setBeaconDetection:YES iBeacons:YES inBackground:YES];
+[[RABeaconManager sharedManager] setBeaconDetection:YES iBeacons:NO inBackground:YES];
 ```
-This code sets up the BeaconManager to scan for a Beacon and an iBeacon. both using the null UDID.
 
 To be notified as soon as a Beacon or iBeacon is detected add the following code in the appropriate location :
 
@@ -50,10 +43,15 @@ To be notified as soon as a Beacon or iBeacon is detected add the following code
 selector:@selector(beaconsDetectedUpdate:)
 name:BeaconManagerBeaconsDetectedChangedNotification
 object:nil];
-[[NSNotificationCenter defaultCenter] addObserver:self
-selector:@selector(iBeaconsDetectedUpdate:)
-name:BeaconManagerIBeaconsDetectedChangedNotification
-object:nil];
+```
+
+Don't forget to implement the handler for the notification :
+```Objective-C
+- (void)beaconsDetectedUpdate:(NSNotification *)notification
+{
+// Beacons array did update
+// check [RABeaconManger sharedManager].detectedBeacons for any beacons in range
+}
 ```
 
 For more information read the **Documentation** or the **Demo Project**.
@@ -95,5 +93,6 @@ keys where needed.
 Demo project
 -----------
 For information on how to use the library the [documentation](http://cocoadocs.org/docsets/BeaconManager) should be sufficient, but if not a Demo project is provided that allows you to detect Beacons and iBeacons.
+
 
 
