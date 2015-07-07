@@ -12,6 +12,9 @@
 #import "RABeaconService.h"
 #import "RAIBeaconService.h"
 
+#import "RABeacon.h"
+#import "RAIBeacon.h"
+
 static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 
 @interface AppDelegate ()
@@ -37,6 +40,7 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
     if ([RABeaconManager sharedManager].beaconServices.count != 1
         && [RABeaconManager sharedManager].iBeaconServices.count != 1)
     {
+        // remove all services that were saved by the Beacon Manager
         [[RABeaconManager sharedManager] removeAllServices];
         
         RABeaconService *beaconService = [[RABeaconService alloc] initWithName:@"Test Beacon"
@@ -45,10 +49,20 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
         
         RAIBeaconService *iBeaconService = [[RAIBeaconService alloc] initWithName:@"Test iBeacon"
                                                                              UUID:[[NSUUID alloc] initWithUUIDString:kServiceUUID]
-                                                                            major:0
-                                                                            minor:0];
+                                                                            major:1
+                                                                            minor:1];
         [[RABeaconManager sharedManager] addIBeaconService:iBeaconService];
     }
+
+    [RABeaconManager sharedManager].filterBeaconBlock = ^BOOL(RABeacon *beacon)
+    {
+        return YES;
+    };
+    
+    [RABeaconManager sharedManager].filterIBeaconBlock = ^BOOL(RAIBeacon *beacon)
+    {
+        return YES;
+    };
     
     [RABeaconManager sharedManager].peripheralName = @"Test Beacon";
     [RABeaconManager sharedManager].peripheralServiceUUID = kServiceUUID;
@@ -67,11 +81,18 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
                                                  selector:@selector(beaconsDetectedUpdate:)
                                                      name:BeaconManagerBeaconsDetectedChangedNotification
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(iBeaconsDetectedUpdate:)
+                                                     name:BeaconManagerIBeaconsDetectedChangedNotification
+                                                   object:nil];
     }
     else
     {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:BeaconManagerBeaconsDetectedChangedNotification
+                                                      object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:BeaconManagerIBeaconsDetectedChangedNotification
                                                       object:nil];
     }
 }
@@ -79,6 +100,11 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 - (void)beaconsDetectedUpdate:(NSNotification *)notification
 {
     [self notify:[NSString stringWithFormat:@"Did detect %llu beacons", (unsigned long long)[RABeaconManager sharedManager].detectedBeacons.count]];
+}
+
+- (void)iBeaconsDetectedUpdate:(NSNotification *)notification
+{
+    [self notify:[NSString stringWithFormat:@"Did detect %llu iBeacons", (unsigned long long)[RABeaconManager sharedManager].detectedIBeacons.count]];
 }
 
 - (void)notify:(NSString *)message

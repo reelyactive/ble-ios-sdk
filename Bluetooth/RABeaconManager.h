@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 
 /**
  * If a Beacon isn't detected for this amount of time it's considered out of range and removed from the detectedBeacons NSArray.
- * The default value is 10 seconds.
+ * The default value is 60 seconds.
  */
 @property (assign, nonatomic) NSTimeInterval beaconExpiryAge;
 
@@ -96,6 +96,11 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
  */
 - (void)removeIBeaconService:(RAIBeaconService *)iBeaconService;
 
+/**
+ * Removes all the beacon services to detect
+ */
+- (void)removeAllServices;
+
 
 /**
  * If YES and a gived Beacon is detected, then the manager will advertise with the given UUID and Name.
@@ -103,10 +108,12 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
  * @warning If YES and peripheralServiceUUID and peripheralName aren't set an NSInternalInconsistencyException is raised.
  */
 @property (assign, nonatomic) BOOL advertisePeripheralWhenBeaconDetected;
+
 /**
  * UUID for the advertised peripheral.
  */
 @property (strong, nonatomic) NSString *peripheralServiceUUID;
+
 /**
  * Name for the advertised peripheral.
  */
@@ -131,19 +138,16 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 @property (assign, nonatomic, readonly) BeaconManagerState state;
 
 /**
- * An Array of Beacon Services objects to detect.
+ * An array of Beacon Services objects to detect.
+ * This array persists over launches of the app
  */
 @property (strong, nonatomic, readonly) NSArray *beaconServices;
 
 /**
- * An Array of iBeacon Services objects to detect.
+ * An array of iBeacon Services objects to detect.
+ * This array persists over launches of the app
  */
 @property (strong, nonatomic, readonly) NSArray *iBeaconServices;
-
-/**
- * Removes all the beacon services to detect
- */
-- (void)removeAllServices;
 
 /**
  * Each object is an NSDictionary with 2 keys.

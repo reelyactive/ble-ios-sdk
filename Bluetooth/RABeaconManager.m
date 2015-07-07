@@ -36,7 +36,7 @@ static NSString * const kStoredBeaconServicesKey = @"kStoredBeaconServicesKey";
 static NSString * const kStoredIBeaconServicesKey = @"kStoredIBeaconServicesKey";
 
 static NSTimeInterval const kRefreshTimeInterval = 2.f;
-static NSTimeInterval const kBeaconExpiryAge = 10.f;
+static NSTimeInterval const kBeaconExpiryAge = 60.f;
 
 @interface RABeaconManager () <CBCentralManagerDelegate, CBPeripheralManagerDelegate, CLLocationManagerDelegate>
 
@@ -86,6 +86,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     if (self)
     {
         self.mutableDetectedBeacons = [[NSMutableArray alloc] init];
+        self.mutableDetectedIBeacons = [[NSMutableArray alloc] init];
         
         [self loadBeaconServices];
         
@@ -558,7 +559,7 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         
         for (RABeaconService *beaconService in self.beaconServices)
         {
-            BLog(@"UUID : %@", beaconService.uuid.UUIDString);
+            BLog(@"UUID : %@", beaconService.serviceUUID.UUIDString);
             [identifiers addObject:[CBUUID UUIDWithNSUUID:beaconService.serviceUUID]];
         }
         
@@ -593,44 +594,12 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         }
     }
     
-//    if (sysIDString == nil || [self isValidSystemID:sysIDString] == NO) {
-//        return;
-//    }
-    
-    NSLog(@"Detected Beacon System ID : %@", sysIDString);
-    
     for (CBUUID *uuid in uuids)
     {
         [self didDetectServiceUUID:[[NSUUID alloc] initWithUUIDString:uuid.UUIDString] systemID:sysIDString];
     }
     
     BLog(@"Found Peripheral Name : %@ : %@ : %@", peripheral.name, peripheral.identifier.UUIDString, advertisementData);
-}
-
-- (BOOL)isValidSystemID:(NSString *)systemID
-{
-    NSString *prefix = @"001bc509408100";
-    NSArray *suffixes = @[
-                          @"84",
-                          @"85",
-                          @"86",
-                          @"87",
-#ifdef DEBUG
-                          @"55",
-#endif
-                          ];
-    
-    if ([systemID hasPrefix:prefix] == NO) {
-        return NO;
-    }
-    
-    for (NSString *suffix in suffixes)
-    {
-        if ([systemID hasSuffix:suffix]) {
-            return YES;
-        }
-    }
-    return NO;
 }
 
 #pragma mark - CBPeripheralManagerDelegate
@@ -865,9 +834,9 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
                  kBeaconManagerBeaconKey: iBeacon
                  };
         
-        [self.mutableDetectedBeacons addObject:dict];
+        [self.mutableDetectedIBeacons addObject:dict];
         
-        [self detectedBeaconsDidUpdate];
+        [self detectedIBeaconsDidUpdate];
     }
     else
     {
@@ -875,11 +844,11 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
         
         mutableDict[kBeaconManagerDateKey] = [NSDate date];
         
-        NSUInteger index = [[self mutableDetectedBeacons] indexOfObject:dict];
+        NSUInteger index = [[self mutableDetectedIBeacons] indexOfObject:dict];
         
         if (index != NSNotFound)
         {
-            [self.mutableDetectedBeacons replaceObjectAtIndex:index withObject:[[NSDictionary alloc] initWithDictionary:mutableDict]];
+            [self.mutableDetectedIBeacons replaceObjectAtIndex:index withObject:[[NSDictionary alloc] initWithDictionary:mutableDict]];
         }
     }
 }
@@ -949,20 +918,50 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
 
 - (void)refresh:(NSTimer *)timer
 {
-    BLog(@"Refresh");
+    BLog(@"Refreshing Beacons List");
+    if ([self refreshDetectedBeacons:self.mutableDetectedBeacons])
+    {
+        [self detectedBeaconsDidUpdate];
+    }
     
+    BLog(@"Refreshing iBeacons List");
+    if ([self refreshDetectedBeacons:self.mutableDetectedIBeacons])
+    {
+        [self detectedIBeaconsDidUpdate];
+    }
+}
+
+- (BOOL)refreshDetectedBeacons:(NSMutableArray *)detectedBeacons
+{
     NSUInteger removed = 0;
     
-    for (NSUInteger i = 0; i < self.mutableDetectedBeacons.count; )
+    for (NSUInteger i = 0; i < detectedBeacons.count; )
     {
-        NSDictionary *dict = self.mutableDetectedBeacons[i];
+        NSDictionary *dict = detectedBeacons[i];
         
         NSDate *date = dict[kBeaconManagerDateKey];
+        
+#if BLOG_DEBUG
+        id beacon = dict[kBeaconManagerBeaconKey];
+        
+        if ([beacon isKindOfClass:[RABeacon class]])
+        {
+            RABeacon *beacon = beacon;
+            
+            BLog(@"Beacon expires in : %lf", (double)(self.beaconExpiryAge - date.timeIntervalSinceNow * -1));
+        }
+        else if ([beacon isKindOfClass:[RAIBeacon class]])
+        {
+            RAIBeacon *beacon = beacon;
+            
+            BLog(@"iBeacon expires in : %lf", (double)(self.beaconExpiryAge - date.timeIntervalSinceNow * -1));
+        }
+#endif
         
         if (date.timeIntervalSinceNow * -1 > self.beaconExpiryAge)
         {
             removed++;
-            [self.mutableDetectedBeacons removeObjectAtIndex:i];
+            [detectedBeacons removeObjectAtIndex:i];
         }
         else
         {
@@ -972,8 +971,9 @@ static NSTimeInterval const kBeaconExpiryAge = 10.f;
     
     if (removed > 0)
     {
-        [self detectedBeaconsDidUpdate];
+        return YES;
     }
+    return NO;
 }
 
 - (NSArray *)detectedBeacons
