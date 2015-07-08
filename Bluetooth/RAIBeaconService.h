@@ -10,6 +10,8 @@
 
 @import CoreLocation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface RAIBeaconService : NSObject <NSCoding>
 
 /**
@@ -60,3 +62,5 @@
 - (RAIBeaconService *)iBeaconService;
 
 @end
+
+NS_ASSUME_NONNULL_END

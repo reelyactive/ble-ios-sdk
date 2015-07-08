@@ -206,7 +206,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         }
         return [[NSArray alloc] initWithArray:items];
     }
-    return nil;
+    return @[];
 }
 
 - (void)loadBeaconServices

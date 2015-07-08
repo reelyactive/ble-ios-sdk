@@ -10,6 +10,8 @@
 
 @class RABeaconService;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  * Represents a Bluetooth Beacon.
  */
@@ -46,3 +48,5 @@
 - (BOOL)isEqualToBeacon:(RABeacon *)beacon;
 
 @end
+
+NS_ASSUME_NONNULL_END

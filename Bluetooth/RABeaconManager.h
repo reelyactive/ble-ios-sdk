@@ -10,6 +10,7 @@
 
 @class RABeacon, RAIBeacon, RABeaconService, RAIBeaconService;
 
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  * Posted when a Beacon is detected or is no longer in range.
@@ -112,17 +113,17 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 /**
  * UUID for the advertised peripheral.
  */
-@property (strong, nonatomic) NSString *peripheralServiceUUID;
+@property (strong, nonatomic, nullable) NSString *peripheralServiceUUID;
 
 /**
  * Name for the advertised peripheral.
  */
-@property (strong, nonatomic) NSString *peripheralName;
+@property (strong, nonatomic, nullable) NSString *peripheralName;
 
 /**
  * Optional UUID for the Caracteristic of the advertised peripheral.
  */
-@property (strong, nonatomic) NSString *peripheralCaracteristicUUID;
+@property (strong, nonatomic, nullable) NSString *peripheralCaracteristicUUID;
 
 
 /**
@@ -168,14 +169,14 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
  * By default this is nil, so the beacons are not filtered and all detected beacons are reported.
  * @return YES to add the Beacon to the list of detectedBeacons
  */
-@property (copy, nonatomic) BOOL (^filterBeaconBlock)(RABeacon *beacon);
+@property (copy, nonatomic, nullable) BOOL (^filterBeaconBlock)(RABeacon *beacon);
 
 /**
  * This block is called each time an iBeacon is detected to workout if the beacon should be added to the list of detectedIBeacons.
  * By default this is nil, so the beacons are not filtered and all detected beacons are reported.
  * @return YES to add the iBeacon to the list of detectedBeacons
  */
-@property (copy, nonatomic) BOOL (^filterIBeaconBlock)(RAIBeacon *iBeacon);
+@property (copy, nonatomic, nullable) BOOL (^filterIBeaconBlock)(RAIBeacon *iBeacon);
 
 /**
  * Used only for debug.
@@ -188,3 +189,5 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 - (void)startDebuggingBeacon;
 
 @end
+
+NS_ASSUME_NONNULL_END

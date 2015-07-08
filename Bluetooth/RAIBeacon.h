@@ -12,6 +12,8 @@
 
 @class RAIBeaconService;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface RAIBeacon : NSObject
 
 /**
@@ -54,3 +56,5 @@
 - (BOOL)isEqualToIBeacon:(RAIBeacon *)iBeacon;
 
 @end
+
+NS_ASSUME_NONNULL_END
