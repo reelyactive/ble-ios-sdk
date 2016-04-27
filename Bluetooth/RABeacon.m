@@ -20,7 +20,7 @@
 
 @implementation RABeacon
 
-- (instancetype)initWithBeaconService:(RABeaconService *)beaconService systemID:(NSString *)systemID
+- (instancetype)initWithBeaconService:(RABeaconService *)beaconService systemID:(NSString *)systemID rssi:(NSNumber*) rssi
 {
     self = [super init];
     if (self)
@@ -28,6 +28,7 @@
         _name = beaconService.name;
         _serviceUUID = beaconService.serviceUUID;
         _systemID = systemID;
+        _rssi = rssi;
     }
     return self;
 }

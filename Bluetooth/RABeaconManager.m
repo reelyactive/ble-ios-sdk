@@ -365,7 +365,47 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         {
             [self turnOffLocation];
         }
+    }else{
+    
+        if (self.detectBeacons)
+        {
+            
+            [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"fakeAdvertising" expirationHandler:^{
+                
+            }];
+            
+            // Start fakeAdverising
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND,0), ^{
+                [self advertisingBackgroundTask];
+            });
+        }
     }
+}
+
+- (void) advertisingBackgroundTask
+{
+    printf("\n advertisingBackgroundTask");
+    
+    UIApplicationState state = [[UIApplication sharedApplication] applicationState];
+    
+    if(state == UIApplicationStateBackground || state == UIApplicationStateInactive){
+    
+        if([_mutableDetectedBeacons count] > 0){
+            
+            [self fakeAdvertisingRequest];
+        }
+        
+        [NSThread sleepForTimeInterval:(5)]; // TODO : EXTRACT TIME INTERVALE ?
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND,0), ^{
+            [self advertisingBackgroundTask];
+        });
+    }
+}
+
+- (void) fakeAdvertisingRequest
+{
+    printf("\n ADV request");
+    
 }
 
 - (void)appWillEnterForegroundActive:(NSNotification *)notification
@@ -596,7 +636,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     
     for (CBUUID *uuid in uuids)
     {
-        [self didDetectServiceUUID:[[NSUUID alloc] initWithUUIDString:uuid.UUIDString] systemID:sysIDString];
+        [self didDetectServiceUUID:[[NSUUID alloc] initWithUUIDString:uuid.UUIDString] systemID:sysIDString rssi:RSSI];
     }
     
     BLog(@"Found Peripheral Name : %@ : %@ : %@", peripheral.name, peripheral.identifier.UUIDString, advertisementData);
@@ -748,14 +788,15 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 
 #pragma mark - Detected Beacons
 
-- (void)didDetectServiceUUID:(NSUUID *)uuid systemID:(NSString*)sysIDString
+- (void)didDetectServiceUUID:(NSUUID *)uuid systemID:(NSString*)sysIDString rssi:(NSNumber*)rssi
 {
     for (RABeaconService *beaconService in self.beaconServices)
     {
         if ([beaconService.serviceUUID isEqual:uuid])
         {
             RABeacon *beacon = [[RABeacon alloc] initWithBeaconService:beaconService
-                                                              systemID:sysIDString];
+                                                              systemID:sysIDString
+                                                                  rssi:rssi];
             
             [self didDetectBeacon:beacon];
             break;
@@ -795,6 +836,9 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         
         if (index != NSNotFound)
         {
+            // Update to override rssi
+            mutableDict[kBeaconManagerBeaconKey] = beacon;
+
             [self.mutableDetectedBeacons replaceObjectAtIndex:index withObject:[[NSDictionary alloc] initWithDictionary:mutableDict]];
         }
     }

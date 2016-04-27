@@ -33,10 +33,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic, readonly) NSString *systemID;
 
 /**
+ * The system RSSI of the Beacon.
+ */
+@property (strong, nonatomic, readonly) NSNumber *rssi;
+
+
+/**
  * Creates a Beacon based on the gived Beacon Service.
  */
 - (instancetype)initWithBeaconService:(RABeaconService *)beaconService
-                             systemID:(NSString *)systemID;
+                             systemID:(NSString *)systemID
+                                 rssi:(NSNumber *) rssi;
 
 
 - (BOOL)isEqual:(id)object;
