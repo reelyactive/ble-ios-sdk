@@ -367,7 +367,8 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
             [self turnOffLocation];
         }
     }else if (self.detectBeacons && self.advertisePeripheralWhenBeaconDetected && self.peripheralServiceUUID != nil){
-            
+        
+        // Need to call beginBackgroundTaskWithName to keep the app runing in background
         [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"fakeAdvertising" expirationHandler:^{}];
             
         // Start background task
@@ -379,21 +380,15 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 
 - (void) advertisingBackgroundTask
 {
-    printf("\n advertisingBackgroundTask");
-    
     UIApplicationState state = [[UIApplication sharedApplication] applicationState];
     
     if(state == UIApplicationStateBackground || state == UIApplicationStateInactive){
     
         if([self.mutableDetectedBeacons count] > 0){
-            
             [self fakeAdvertisingRequest];
-        }else{
-        
-            printf("\n no beacon detected :( ");
         }
         
-        [NSThread sleepForTimeInterval:(5)]; // TODO : EXTRACT TIME INTERVALE ?
+        [NSThread sleepForTimeInterval:(5)];
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND,0), ^{
             [self advertisingBackgroundTask];
         });
@@ -402,12 +397,10 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 
 - (void) fakeAdvertisingRequest
 {
-    printf("\n ADV request");
-    
     // Build NSData
     NSData *data = [self buildData];
     
-    // Send request
+    // Send request if build data succeeded
     if(data != nil){
     
         NSString *url = [self beaconBackgroundAdvertisingURL] != nil ? [self beaconBackgroundAdvertisingURL] : beaconBackgroundAdvertisingDefaultURL;
@@ -425,17 +418,9 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
             
             NSData *result = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
             
-            if( response != nil){
-                NSLog(@"URL Request response : %@", response);
-            }
-            
-            if( error != nil){
-                NSLog(@"URL Request error : %@", error);
-            }
-            
         } @catch (NSException *exception) {
             
-            NSLog(@"Excepetion %@", exception);
+//            NSLog(@"Excepetion %@", exception);
         }
         
     }
@@ -443,7 +428,6 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 
 -(NSData*) buildData
 {
-    printf("\n BuildData");
     NSString *perifUUID = self.peripheralServiceUUID;
     perifUUID = perifUUID != nil ? [perifUUID stringByReplacingOccurrencesOfString:@"-" withString:@""] : @"DEFAULT";
 
@@ -492,25 +476,15 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     [obj setObject:@"appearance" forKey:@"event"];
     [obj setObject:tiraid forKey:@"tiraid"];
     
-    
-    // Convert to JSON
-    NSError *error = nil;
+    // Convert to json
     NSData *json;
     
     // Dictionary convertable to JSON ?
     if ([NSJSONSerialization isValidJSONObject:obj])
     {
-        
         // Serialize the dictionary
+        NSError *error = nil;
         json = [NSJSONSerialization dataWithJSONObject:obj options:NSJSONWritingPrettyPrinted error:&error];
-        
-        // If no errors, let's view the JSON
-        if (json != nil && error == nil)
-        {
-            NSString *jsonString = [[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-            
-            NSLog(@"JSON: %@", jsonString);
-        }
     }
 
     return json;
@@ -519,13 +493,11 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 
 -(NSString*)getMacAddr
 {
-    
     if([[NSUserDefaults standardUserDefaults] valueForKey: kBeaconManagerMacAddrKey] == nil){
     
         NSString *addr = @"";
         
         for (int i =0; i < 6; i++) {
-            
             int n = arc4random_uniform(254);
             addr = [addr stringByAppendingFormat:@"%02x",n];
         }
@@ -538,7 +510,6 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 
 -(NSString*)getFormatedDate
 {
-    
     NSDate *d = [[NSDate alloc] init];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
