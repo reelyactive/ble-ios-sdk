@@ -420,7 +420,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
             
         } @catch (NSException *exception) {
             
-//            NSLog(@"Excepetion %@", exception);
+            NSLog(@"Excepetion %@", exception);
         }
         
     }
