@@ -416,7 +416,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
             [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
             [request setHTTPBody:data];
             
-            NSData *result = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
             
         } @catch (NSException *exception) {
             
@@ -440,7 +440,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         RABeacon *b = [(RABeacon *) d valueForKey:@"kBeaconManagerBeaconKey"];
         if( b != nil && b.systemID != nil){
             
-            int theRssi = b.rssi != nil ? 0 : b.rssi;
+            int theRssi = b.rssi != nil ? 0 : [b.rssi intValue];
             theRssi = [b.rssi intValue] > 0 ? [b.rssi intValue] -128 : [b.rssi intValue] + 128;
             
             NSMutableDictionary *id_dict = [NSMutableDictionary dictionary];
