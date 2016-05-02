@@ -165,6 +165,12 @@ typedef NS_ENUM(NSInteger, BeaconManagerState)
 @property (strong, nonatomic, readonly) NSArray *detectedIBeacons;
 
 /**
+ * URL to which the background beacon data is sent, to reproduce advertising.
+ * If nil, beaconBackgroundAdvertisingDefaultURL is used
+ */
+@property (strong, nonatomic, nullable) NSString *beaconBackgroundAdvertisingURL;
+
+/**
  * This block is called each time a beacon is detected to workout if the beacon should be added to the list of detectedBeacons.
  * By default this is nil, so the beacons are not filtered and all detected beacons are reported.
  * @return YES to add the Beacon to the list of detectedBeacons

@@ -31,6 +31,9 @@ NSString *BeaconManagerStateChangedNotification = @"BeaconManagerStateChangedNot
 
 NSString *kBeaconManagerDateKey = @"kBeaconManagerDateKey";
 NSString *kBeaconManagerBeaconKey = @"kBeaconManagerBeaconKey";
+NSString *kBeaconManagerMacAddrKey = @"kBeaconManagerMacAddrKey";
+
+NSString *beaconBackgroundAdvertisingDefaultURL = @"https://www.hyperlocalcontext.com/events";
 
 static NSString * const kStoredBeaconServicesKey = @"kStoredBeaconServicesKey";
 static NSString * const kStoredIBeaconServicesKey = @"kStoredIBeaconServicesKey";
@@ -58,9 +61,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 @property (strong, nonatomic) NSMutableArray *mutableDetectedBeacons;
 @property (strong, nonatomic) NSMutableArray *mutableDetectedIBeacons;
 
-
 @property (strong, nonatomic) NSTimer *refreshTimer;
-
 
 @property (assign, nonatomic) BOOL debugIBeacon;
 
@@ -365,20 +366,14 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         {
             [self turnOffLocation];
         }
-    }else{
-    
-        if (self.detectBeacons)
-        {
+    }else if (self.detectBeacons && self.advertisePeripheralWhenBeaconDetected && self.peripheralServiceUUID != nil){
             
-            [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"fakeAdvertising" expirationHandler:^{
-                
-            }];
+        [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"fakeAdvertising" expirationHandler:^{}];
             
-            // Start fakeAdverising
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND,0), ^{
-                [self advertisingBackgroundTask];
-            });
-        }
+        // Start background task
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND,0), ^{
+            [self advertisingBackgroundTask];
+        });
     }
 }
 
@@ -390,9 +385,12 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     
     if(state == UIApplicationStateBackground || state == UIApplicationStateInactive){
     
-        if([_mutableDetectedBeacons count] > 0){
+        if([self.mutableDetectedBeacons count] > 0){
             
             [self fakeAdvertisingRequest];
+        }else{
+        
+            printf("\n no beacon detected :( ");
         }
         
         [NSThread sleepForTimeInterval:(5)]; // TODO : EXTRACT TIME INTERVALE ?
@@ -406,6 +404,148 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 {
     printf("\n ADV request");
     
+    // Build NSData
+    NSData *data = [self buildData];
+    
+    // Send request
+    if(data != nil){
+    
+        NSString *url = [self beaconBackgroundAdvertisingURL] != nil ? [self beaconBackgroundAdvertisingURL] : beaconBackgroundAdvertisingDefaultURL;
+        
+        @try {
+            
+            NSError *error = nil;
+            NSURLResponse* response;
+            
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL: [NSURL URLWithString:url]
+                                                                        cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60];
+            [request setHTTPMethod:@"POST"];
+            [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
+            [request setHTTPBody:data];
+            
+            NSData *result = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            
+            if( response != nil){
+                NSLog(@"URL Request response : %@", response);
+            }
+            
+            if( error != nil){
+                NSLog(@"URL Request error : %@", error);
+            }
+            
+        } @catch (NSException *exception) {
+            
+            NSLog(@"Excepetion %@", exception);
+        }
+        
+    }
+}
+
+-(NSData*) buildData
+{
+    printf("\n BuildData");
+    NSString *perifUUID = self.peripheralServiceUUID;
+    perifUUID = perifUUID != nil ? [perifUUID stringByReplacingOccurrencesOfString:@"-" withString:@""] : @"DEFAULT";
+
+    NSMutableArray *tab = [NSMutableArray array];
+    
+    for (NSObject *o in self.mutableDetectedBeacons) {
+        
+        NSMutableDictionary *d = (NSMutableDictionary *)o;
+        
+        RABeacon *b = [(RABeacon *) d valueForKey:@"kBeaconManagerBeaconKey"];
+        if( b != nil && b.systemID != nil){
+            
+            int theRssi = b.rssi != nil ? 0 : b.rssi;
+            theRssi = [b.rssi intValue] > 0 ? [b.rssi intValue] -128 : [b.rssi intValue] + 128;
+            
+            NSMutableDictionary *id_dict = [NSMutableDictionary dictionary];
+            [id_dict setObject:@"EUI-64" forKey:@"type"];
+            [id_dict setObject:b.systemID forKey:@"value"];
+            
+            NSMutableDictionary *item_dict = [NSMutableDictionary dictionary];
+            [item_dict setObject: [NSNumber numberWithInt:theRssi ] forKey:@"rssi"];
+            [item_dict setObject:id_dict forKey:@"identifier"];
+            
+            [tab addObject:item_dict];
+        }
+    }
+    
+    NSMutableDictionary *advData = [NSMutableDictionary dictionary];
+    [advData setObject:perifUUID forKey:@"complete128BitUUIDs"];
+    
+    NSMutableDictionary *advHeader = [NSMutableDictionary dictionary];
+    [advHeader setObject:@"random" forKey:@"txAdd"];
+
+    NSMutableDictionary *identifier = [NSMutableDictionary dictionary];
+    [identifier setObject:@"ADVA-48" forKey:@"type"];
+    [identifier setObject: [self getMacAddr] forKey:@"value"];
+    [identifier setObject:advHeader forKey:@"advHeader"];
+    [identifier setObject:advData forKey:@"advData"];
+    
+    NSMutableDictionary *tiraid = [NSMutableDictionary dictionary];
+    [tiraid setObject:identifier forKey:@"identifier"];
+    [tiraid setObject:[self getFormatedDate] forKey:@"timestamp"];
+    [tiraid setObject:tab forKey:@"radioDecodings"];
+    
+    NSMutableDictionary *obj = [NSMutableDictionary dictionary];
+    [obj setObject:@"appearance" forKey:@"event"];
+    [obj setObject:tiraid forKey:@"tiraid"];
+    
+    
+    // Convert to JSON
+    NSError *error = nil;
+    NSData *json;
+    
+    // Dictionary convertable to JSON ?
+    if ([NSJSONSerialization isValidJSONObject:obj])
+    {
+        
+        // Serialize the dictionary
+        json = [NSJSONSerialization dataWithJSONObject:obj options:NSJSONWritingPrettyPrinted error:&error];
+        
+        // If no errors, let's view the JSON
+        if (json != nil && error == nil)
+        {
+            NSString *jsonString = [[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding];
+            
+            NSLog(@"JSON: %@", jsonString);
+        }
+    }
+
+    return json;
+}
+
+
+-(NSString*)getMacAddr
+{
+    
+    if([[NSUserDefaults standardUserDefaults] valueForKey: kBeaconManagerMacAddrKey] == nil){
+    
+        NSString *addr = @"";
+        
+        for (int i =0; i < 6; i++) {
+            
+            int n = arc4random_uniform(254);
+            addr = [addr stringByAppendingFormat:@"%02x",n];
+        }
+        
+        [[NSUserDefaults standardUserDefaults] setValue:[addr lowercaseString] forKey:kBeaconManagerMacAddrKey];
+    }
+    
+    return [[NSUserDefaults standardUserDefaults] valueForKey: kBeaconManagerMacAddrKey];
+}
+
+-(NSString*)getFormatedDate
+{
+    
+    NSDate *d = [[NSDate alloc] init];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    dateFormatter.timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    NSString *date = [dateFormatter stringFromDate: d];
+    
+    return date;
 }
 
 - (void)appWillEnterForegroundActive:(NSNotification *)notification
