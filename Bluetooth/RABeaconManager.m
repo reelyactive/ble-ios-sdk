@@ -784,6 +784,16 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     }
     
     _advertisePeripheralWhenBeaconDetected = advertisePeripheralWhenBeaconDetected;
+    
+    
+    if(!advertisePeripheralWhenBeaconDetected){
+    
+        if (self.peripheralManager)
+        {
+            BLog(@"Turning Peripheral Off");
+            [self turnOffPeripheral];
+        }
+    }
 }
 
 - (void)startAdvertising
@@ -1066,6 +1076,13 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
                 BLog(@"Turning Peripheral On");
                 [self turnOnPeripheral];
             }
+        }
+    }else{
+    
+        if (self.peripheralManager)
+        {
+            BLog(@"Turning Peripheral Off");
+            [self turnOffPeripheral];
         }
     }
 
