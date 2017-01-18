@@ -785,15 +785,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     
     _advertisePeripheralWhenBeaconDetected = advertisePeripheralWhenBeaconDetected;
     
-    
-    if(!advertisePeripheralWhenBeaconDetected){
-    
-        if (self.peripheralManager)
-        {
-            BLog(@"Turning Peripheral Off");
-            [self turnOffPeripheral];
-        }
-    }
+    [self advertisePeripheralIfNeeded];
 }
 
 - (void)startAdvertising
