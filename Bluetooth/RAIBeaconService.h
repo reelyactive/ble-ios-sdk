@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Creates an iBeacon Service.
  */
-- (instancetype)initWithName:(NSString *)name
+- (instancetype)initWithName:(nullable NSString *)name
                         UUID:(NSUUID *)uuid
                        major:(CLBeaconMajorValue)major
                        minor:(CLBeaconMinorValue)minor;
