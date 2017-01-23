@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "BeaconManager"
-  s.version      = "0.4"
+  s.version      = "0.5"
   s.summary      = "An Objective-C lib for detecting bluetooth beacons and iBeacons"
   s.description  = <<-DESC
   		   An Objective-C lib for detecting bluetooth beacons and iBeacons easily using a shared Manger.
