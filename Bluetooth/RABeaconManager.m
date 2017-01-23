@@ -161,7 +161,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         [self turnOffCentral];
     }
     self.detectBeacons = detectBeacons;
-
+    
     
     if (detectIBeacons == YES && self.detectIBeacons == NO)
     {
@@ -172,7 +172,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         [self turnOffLocation];
     }
     self.detectIBeacons = detectIBeacons;
-
+    
     
     if (detectBeacons || detectIBeacons)
     {
@@ -284,9 +284,9 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
                               }];
     
     self.beaconServices = [self.beaconServices filteredArrayUsingPredicate:predicate];
-
+    
     [self refreshBeaconScanning];
-
+    
     [self persistBeacons];
 }
 
@@ -370,7 +370,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         
         // Need to call beginBackgroundTaskWithName to keep the app runing in background
         [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"fakeAdvertising" expirationHandler:^{}];
-            
+        
         // Start background task
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND,0), ^{
             [self advertisingBackgroundTask];
@@ -383,7 +383,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     UIApplicationState state = [[UIApplication sharedApplication] applicationState];
     
     if(state == UIApplicationStateBackground || state == UIApplicationStateInactive){
-    
+        
         if([self.mutableDetectedBeacons count] > 0){
             [self fakeAdvertisingRequest];
         }
@@ -402,7 +402,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     
     // Send request if build data succeeded
     if(data != nil){
-    
+        
         NSString *url = [self beaconBackgroundAdvertisingURL] != nil ? [self beaconBackgroundAdvertisingURL] : beaconBackgroundAdvertisingDefaultURL;
         
         @try {
@@ -430,7 +430,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 {
     NSString *perifUUID = self.peripheralServiceUUID;
     perifUUID = perifUUID != nil ? [perifUUID stringByReplacingOccurrencesOfString:@"-" withString:@""] : @"DEFAULT";
-
+    
     NSMutableArray *tab = [NSMutableArray array];
     
     for (NSObject *o in self.mutableDetectedBeacons) {
@@ -460,7 +460,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     
     NSMutableDictionary *advHeader = [NSMutableDictionary dictionary];
     [advHeader setObject:@"random" forKey:@"txAdd"];
-
+    
     NSMutableDictionary *identifier = [NSMutableDictionary dictionary];
     [identifier setObject:@"ADVA-48" forKey:@"type"];
     [identifier setObject: [self getMacAddr] forKey:@"value"];
@@ -486,7 +486,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         NSError *error = nil;
         json = [NSJSONSerialization dataWithJSONObject:obj options:NSJSONWritingPrettyPrinted error:&error];
     }
-
+    
     return json;
 }
 
@@ -494,7 +494,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 -(NSString*)getMacAddr
 {
     if([[NSUserDefaults standardUserDefaults] valueForKey: kBeaconManagerMacAddrKey] == nil){
-    
+        
         NSString *addr = @"";
         
         for (int i =0; i < 6; i++) {
@@ -564,7 +564,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         BLog(@"Can't monitor beacon regions");
         
         [self updateState];
-
+        
         return NO;
     }
     
@@ -628,7 +628,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
     BLog(@"Did range beacons : %lld, %@", (long long)beacons.count, beacons);
-
+    
     for (CLBeacon *beacon in beacons)
     {
         [self didDetectCLBeacon:beacon];
@@ -651,7 +651,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     BLog(@"kCLAuthorizationStatusAuthorizedAlways : %lld", (long long)kCLAuthorizationStatusAuthorizedAlways);
     BLog(@"kCLAuthorizationStatusAuthorizedWhenInUse : %lld", (long long)kCLAuthorizationStatusAuthorizedWhenInUse);
     BLog(@"Authorization Statis did change : %lld", (long long)status);
-
+    
     [self updateState];
 }
 
@@ -665,14 +665,14 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
                                                                        CBCentralManagerOptionShowPowerAlertKey: @(YES)
                                                                        }];
     [self updateState];
-
+    
     return YES;
 }
 
 - (void)turnOffCentral
 {
     [self.centralManager stopScan];
-
+    
     self.centralManager = nil;
     
     [self updateState];
@@ -812,11 +812,11 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     }
     else
     {
-
+        
         CBMutableService *transferService = [[CBMutableService alloc] initWithType:[CBUUID UUIDWithString:self.peripheralServiceUUID]
                                                                            primary:YES];
-    
-    
+        
+        
         if (self.peripheralCaracteristicUUID.length > 0)
         {
             CBMutableCharacteristic *transferCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:self.peripheralCaracteristicUUID]
@@ -827,9 +827,9 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
                                                 transferCharacteristic
                                                 ];
         }
-    
+        
         [self.peripheralManager addService:transferService];
-    
+        
         [self.peripheralManager startAdvertising:@{
                                                    CBAdvertisementDataServiceUUIDsKey: @[[CBUUID UUIDWithString:self.peripheralServiceUUID]],
                                                    CBAdvertisementDataLocalNameKey: self.peripheralName
@@ -855,7 +855,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
 - (void)startDebuggingIBeacon
 {
     self.debugIBeacon = YES;
-
+    
     if (self.locationManager)
     {
         [self turnOffLocation];
@@ -887,7 +887,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
     {
         [self turnOffCentral];
     }
-
+    
     if (self.peripheralManager == nil)
     {
         [self turnOnPeripheral];
@@ -951,7 +951,7 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
         {
             // Update to override rssi
             mutableDict[kBeaconManagerBeaconKey] = beacon;
-
+            
             [self.mutableDetectedBeacons replaceObjectAtIndex:index withObject:[[NSDictionary alloc] initWithDictionary:mutableDict]];
         }
     }
@@ -1069,15 +1069,15 @@ static NSTimeInterval const kBeaconExpiryAge = 60.f;
                 [self turnOnPeripheral];
             }
         }
-    }else{
-    
+    } else {
+        
         if (self.peripheralManager)
         {
             BLog(@"Turning Peripheral Off");
             [self turnOffPeripheral];
         }
     }
-
+    
 }
 
 - (void)refresh:(NSTimer *)timer

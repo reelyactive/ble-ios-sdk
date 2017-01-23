@@ -31,7 +31,7 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
     
     
     [self setBeaconDetectedNotifications:YES];
-
+    
     if ([RABeaconManager sharedManager].beaconServices.count != 1
         && [RABeaconManager sharedManager].iBeaconServices.count != 1)
     {
@@ -48,7 +48,7 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
                                                                             minor:1];
         [[RABeaconManager sharedManager] addIBeaconService:iBeaconService];
     }
-
+    
     [RABeaconManager sharedManager].filterBeaconBlock = ^BOOL(RABeacon *beacon)
     {
         return YES;
@@ -138,7 +138,7 @@ static NSString * const kServiceUUID = @"00000000-0000-0000-0000-000000000000";
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.    
+    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
 @end

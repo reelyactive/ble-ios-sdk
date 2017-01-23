@@ -24,7 +24,7 @@ static NSString *const kBeaconMinorValueKey = @"kBeaconMinorValueKey";
 
 @implementation RAIBeaconService
 
-- (instancetype)initWithName:(NSString *)name
+- (instancetype)initWithName:(nullable NSString *)name
                         UUID:(NSUUID *)uuid
                        major:(CLBeaconMajorValue)major
                        minor:(CLBeaconMinorValue)minor
